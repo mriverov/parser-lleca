@@ -1,7 +1,7 @@
 package org.unq.parser.lleca.lexer.tokens;
 
 /**
- * Created by mrivero on 24/9/17.
+ * Son simplemente nombres, palabras que contienen caracteres alfabéticos, y que puede contener numeros y guion bajo.
  */
 public class TokenIdentifier implements Token {
 
@@ -13,5 +13,9 @@ public class TokenIdentifier implements Token {
 
     public String value() {
         return value;
+    }
+
+    public String toString(){
+        return "<indentificador> "+ value;
     }
 }

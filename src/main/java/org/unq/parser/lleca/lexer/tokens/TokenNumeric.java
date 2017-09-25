@@ -1,7 +1,7 @@
 package org.unq.parser.lleca.lexer.tokens;
 
 /**
- * Created by mrivero on 24/9/17.
+ * Números
  */
 public class TokenNumeric implements Token {
     private String value;
@@ -12,5 +12,9 @@ public class TokenNumeric implements Token {
 
     public String value() {
         return value;
+    }
+
+    public String toString(){
+        return "<número> "+ value;
     }
 }

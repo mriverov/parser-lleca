@@ -11,11 +11,21 @@ public class ParseResult {
     private String message;
     private Optional<String> errorReference; //line or word that was incorrect
 
+    public ParseResult(Result code, String description, Optional<String> reference){
+        resultCode = code;
+        message = description;
+        errorReference = reference;
+    }
+
+
+    private String getErrorReference(){
+        return errorReference.isPresent()? " when process " + errorReference.get() : "";
+    }
+
 
     @Override
     public String toString(){
-        //TODO define in order to print a better message
-        return null;
+        return "[" + resultCode  + "] " + message + " " + getErrorReference();
     }
 
 }

@@ -13,4 +13,8 @@ public class TokenLiteral implements Token {
     public String value() {
         return value;
     }
+
+    public String toString(){
+        return " \" " + value + " \" ";
+    }
 }

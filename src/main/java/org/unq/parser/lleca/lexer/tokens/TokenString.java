@@ -1,7 +1,7 @@
 package org.unq.parser.lleca.lexer.tokens;
 
 /**
- * Created by mrivero on 24/9/17.
+ *  Palabras que empiezan con "". Se puede escapear la comilla con /" y escribir // se toma como una sola barra.
  */
 public class TokenString implements Token{
 
@@ -13,5 +13,9 @@ public class TokenString implements Token{
 
     public String value() {
         return value;
+    }
+
+    public String toString(){
+        return "<cadena> "+ value;
     }
 }
