@@ -2,6 +2,7 @@ package org.unq.parser.lleca.lexer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.unq.parser.lleca.lexer.tokens.*;
+import org.unq.parser.lleca.lexer.tokens.reserved.GlobalSymbols;
 import org.unq.parser.lleca.lexer.tokens.reserved.Keywords;
 import org.unq.parser.lleca.lexer.tokens.reserved.Symbols;
 import org.unq.parser.lleca.status.ParseResult;
@@ -28,8 +29,10 @@ public class Lexer {
     private Boolean literal = Boolean.FALSE;
     private Boolean ignore = Boolean.FALSE;
 
+    private GlobalSymbols globalSymbols = new GlobalSymbols();
 
     public Lexer(File fileToTokenize){
+
         this.file = fileToTokenize;
     }
 
@@ -99,11 +102,12 @@ public class Lexer {
                                     literal = Boolean.FALSE;
                                 }else if("\\".equals(character) && string && !identifier && !numeric && !literal){
                                     scaped = true;
-                                }else if (isReservedSymbol(character, symbols) && !string && !identifier && !numeric && !literal){
+                                }else if (isReservedSymbol(actualValue, symbols) && !string && !identifier && !numeric /*&& !literal*/){
                                     literal = Boolean.TRUE;
                                 }
-                                //TODO
-                                /*AGREGAR EL CASO EN QUE NO ES SIMBOLO RESERVADO PERO TIENE UN CARACTER QUE ESTÁ EN GLOBALSYMBOLS.*/
+                                else if(globalSymbols.isGlobalSymbol(character) && !string && !identifier && !numeric /*&& !literal*/){
+                                    literal = Boolean.TRUE;
+                                }
                                 else {
                                     return new ParseResult(Result.ERROR, "Syntax error: unknown character", Optional.of("Trying to read character "+ character));
                                 }
