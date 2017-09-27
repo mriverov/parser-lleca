@@ -1,5 +1,3 @@
-/* Gramática de Lleca escrita en Lleca */
-
 grammar
 | rule grammar => Cons($1, $2)
 | /*EMPTY*/    => Nil

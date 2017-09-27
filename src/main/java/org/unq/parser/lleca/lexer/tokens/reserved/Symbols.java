@@ -12,4 +12,14 @@ public class Symbols {
     public Symbols(List<String> reservedSymbols){
         this.reservedSymbols = reservedSymbols;
     }
+
+
+    public List<String> getReservedSymbols() {
+        return reservedSymbols;
+    }
+
+    public void setReservedSymbols(List<String> reservedSymbols) {
+        this.reservedSymbols = reservedSymbols;
+    }
+
 }
