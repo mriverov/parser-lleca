@@ -9,6 +9,7 @@ productions
 | /*EMPTY*/              => Nil
 | production productions => Cons($1, $2)
 
+
 production
 | "|" expansion "=>" term => Production($2, $4)
 

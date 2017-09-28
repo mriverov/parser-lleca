@@ -1,5 +1,6 @@
 package org.unq.parser.lleca.lexer.tokens.reserved;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -11,6 +12,7 @@ public class Symbols {
 
     public Symbols(List<String> reservedSymbols){
         this.reservedSymbols = reservedSymbols;
+        this.reservedSymbols.sort(Comparator.comparingInt(String::length));
     }
 
 
@@ -19,6 +21,7 @@ public class Symbols {
     }
 
     public void setReservedSymbols(List<String> reservedSymbols) {
+        reservedSymbols.sort(Comparator.comparingInt(String::length));
         this.reservedSymbols = reservedSymbols;
     }
 

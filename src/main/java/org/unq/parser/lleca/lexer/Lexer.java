@@ -102,7 +102,12 @@ public class Lexer {
                                     literal = Boolean.FALSE;
                                 }else if("\\".equals(character) && string && !identifier && !numeric && !literal){
                                     scaped = true;
-                                }else if (isReservedSymbol(actualValue, symbols) && !string && !identifier && !numeric /*&& !literal*/){
+                                }
+                                else if((isReservedSymbol(character,symbols) || globalSymbols.isGlobalSymbol(character))  && identifier){
+                                    processToken(actualValue.substring(0,actualValue.length()-1));
+                                    actualValue = character;
+                                }
+                                else if (isReservedSymbol(actualValue, symbols) && !string && !identifier && !numeric /*&& !literal*/){
                                     literal = Boolean.TRUE;
                                 }
                                 else if(globalSymbols.isGlobalSymbol(character) && !string && !identifier && !numeric /*&& !literal*/){

@@ -12,4 +12,8 @@ public class Keywords {
     public Keywords(List<String> reservedKeywords){
         this.reservedKeywords = reservedKeywords;
     }
+
+    public List<String> getReservedKeywords() {
+        return reservedKeywords;
+    }
 }
