@@ -49,4 +49,7 @@ public class GlobalSymbols {
         return gsymbols.contains(symbol);
     }
 
+    public ArrayList<String> getGsymbols() {
+        return gsymbols;
+    }
 }

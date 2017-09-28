@@ -1,5 +1,6 @@
 package org.unq.parser.lleca.lexer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.unq.parser.lleca.lexer.tokens.*;
 import org.unq.parser.lleca.lexer.tokens.reserved.GlobalSymbols;
 import org.unq.parser.lleca.lexer.tokens.reserved.Keywords;
@@ -23,6 +24,7 @@ public class Tokenizer {
     private List<Token> tokens = new ArrayList<>();
     private Symbols symbols;
     private Keywords keywords;
+    private GlobalSymbols globalSymbols = new GlobalSymbols();
 
 
 
@@ -54,18 +56,33 @@ public class Tokenizer {
     private void processFile(String file) {
         //List<String> keyWordsRegex = this.keywords.getReservedKeywords().stream().map(keyWord -> "^" + keyWord).collect(toList());
         List<String> reservedSymbolsRegex = this.symbols.getReservedSymbols().stream().map(symbol -> "^" + symbol).collect(toList());
+        List<String> globalSymbolsRegex = this.globalSymbols.getGsymbols().stream().map(symbol -> "^" + symbol).collect(toList());
         String identifiersRegex = "^[a-zA-Z_][a-zA-Z0-9_]+";
         String numberRegex = "^[0-9]+";
+        String quotationMarksRegex = "^([\"'])(?:(?=(\\\\?))\\2.)*?\\1";
 
 
        while (!"".equals(file)){
-            if (matches(numberRegex,file)){
+            //matchear los comentarios
+           Character ch = file.charAt(0);
+            if (StringUtils.isEmpty(file) ||  ch==' ' || ch=='\t' || ch=='\n' || ch=='\r' ){
+                file = file.substring(1);
+                continue;
+            }
+            else if (file.startsWith("/*")){
+                while (!file.startsWith("*/")){
+                    file = file.substring(1);
+                }
+                file = file.substring(2);
+                continue;
+            }
+            else if (matches(numberRegex,file)){
                 String[] result = this.split(numberRegex, file);
                 tokens.add(new TokenNumeric(result[0]));
                 file=result[1];
                 continue;
             }
-            if (matches(identifiersRegex,file)){
+            else if (matches(identifiersRegex,file)){
                String[] result = this.split(identifiersRegex, file);
                if (isAKeyword(result[0])){
                    tokens.add(new TokenLiteral(result[0]));
@@ -74,9 +91,45 @@ public class Tokenizer {
                file=result[1];
                continue;
            }
+           //TODO: quitar las barras invertidas que queden dentro.
+           else if (matches(quotationMarksRegex,file)){
+               String[] result = this.split(quotationMarksRegex, file);
+               tokens.add(new TokenString(result[0]));
+               file=result[1];
+               continue;
+           }
+           else if (matchesReservedSymbols(this.symbols.getReservedSymbols(), file)){
+               String[] result = this.splitSymbols(this.symbols.getReservedSymbols(), file);
+               tokens.add(new TokenLiteral(result[0]));
+               file=result[1];
+               continue;
+           }
+
+
            else file = "";
 
         }
+    }
+
+    private String[] splitSymbols(List<String> reservedSymbols, String file) {
+        for (String symbol: reservedSymbols) {
+            if (file.startsWith(symbol)){
+                String sy = file.substring(0,symbol.length());
+                String rest = file.substring(symbol.length());
+                return new String[]{sy, rest};
+            };
+        }
+        return null;
+    }
+
+
+    private boolean matchesReservedSymbols(List<String> reservedSymbols, String file) {
+        for (String symbol: reservedSymbols) {
+            if (file.startsWith(symbol)){
+                return true;
+            };
+        }
+        return false;
     }
 
     private String[] split(String regex, String file) {

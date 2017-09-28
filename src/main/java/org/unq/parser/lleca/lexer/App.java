@@ -49,27 +49,37 @@ public class App {
         Tokenizer elLexer = new Tokenizer(gramatica, llecaS, llecaK);
 
         ParseResult res = elLexer.tokenize();
-        System.out.println(res);
 
-/*
-        String identifiersRegex = "^[a-zA-Z_][a-zA-Z0-9_]+";
+        /*String pep = "/*";
+        String juan = "hola soy un /*comen";
+        System.out.println(juan.startsWith(pep));
 
-        String iden = "soyunindet03495840958390532";
+    /*    Pattern p = Pattern.compile("^\\||");
+        Matcher m = p.matcher("||hola");
+        m.find();
+        String token = m.group( 0 );
+*/
+
+   /*     String identifiersRegex = "(^[a-zA-Z_][a-zA-Z0-9_])*\\w+";
+
+        String iden = "_ soyunindet 03495840958390532";
 
 
         Pattern p = Pattern.compile(identifiersRegex);
         Matcher m = p.matcher(iden);
         List<String> tokens = new LinkedList<>();
+
         while(m.find()) {
             String token = m.group( 0 );
             //group 0 is always the entire match
             //k es el resto
+            System.out.printf(token +"\n");
             String k =iden.substring(token.length(),iden.length());
             //token es el string del token
             tokens.add(token);
         }
-*/
 
+*/
 
         // Tokenizer de Java
         /* StringTokenizer st =  new StringTokenizer("\"Hola \"mundo\"\"");
