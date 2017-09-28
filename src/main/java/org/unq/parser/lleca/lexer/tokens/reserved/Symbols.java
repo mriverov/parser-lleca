@@ -11,8 +11,8 @@ public class Symbols {
     private List<String> reservedSymbols;
 
     public Symbols(List<String> reservedSymbols){
+        reservedSymbols.sort((s1,s2) -> s2.length() - s1.length());
         this.reservedSymbols = reservedSymbols;
-        this.reservedSymbols.sort(Comparator.comparingInt(String::length));
     }
 
 
@@ -21,7 +21,7 @@ public class Symbols {
     }
 
     public void setReservedSymbols(List<String> reservedSymbols) {
-        reservedSymbols.sort(Comparator.comparingInt(String::length));
+        reservedSymbols.sort((s1,s2) -> s2.length() - s1.length());
         this.reservedSymbols = reservedSymbols;
     }
 
