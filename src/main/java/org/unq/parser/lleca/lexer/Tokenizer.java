@@ -57,7 +57,8 @@ public class Tokenizer {
         //List<String> keyWordsRegex = this.keywords.getReservedKeywords().stream().map(keyWord -> "^" + keyWord).collect(toList());
         List<String> reservedSymbolsRegex = this.symbols.getReservedSymbols().stream().map(symbol -> "^" + symbol).collect(toList());
         List<String> globalSymbolsRegex = this.globalSymbols.getGsymbols().stream().map(symbol -> "^" + symbol).collect(toList());
-        String identifiersRegex = "^[a-zA-Z_][a-zA-Z0-9_]+";
+        //String identifiersRegex = "^[a-zA-Z_][a-zA-Z0-9_]+";
+        String identifiersRegex = "(^[a-zA-Z_][a-zA-Z0-9_])*\\w+";
         String numberRegex = "^[0-9]+";
         String quotationMarksRegex = "^([\"'])(?:(?=(\\\\?))\\2.)*?\\1";
 

@@ -1,15 +1,16 @@
 package org.unq.parser.lleca.lexer;
 
-import org.unq.parser.lleca.lexer.tokens.Token;
 import org.unq.parser.lleca.lexer.tokens.reserved.Keywords;
 import org.unq.parser.lleca.lexer.tokens.reserved.Symbols;
 import org.unq.parser.lleca.status.ParseResult;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -45,10 +46,12 @@ public class App {
 
         Symbols llecaS = new Symbols(llecaSymbols);
 
-        File gramatica = new File("./files/lleca.ll");
+        File gramatica = new File("./files/lleca_test1.input");
         Tokenizer elLexer = new Tokenizer(gramatica, llecaS, llecaK);
 
         ParseResult res = elLexer.tokenize();
+        System.out.printf(res.toString());
+
 
         /*String pep = "/*";
         String juan = "hola soy un /*comen";
@@ -60,9 +63,9 @@ public class App {
         String token = m.group( 0 );
 */
 
-   /*     String identifiersRegex = "(^[a-zA-Z_][a-zA-Z0-9_])*\\w+";
+    /*    String identifiersRegex = "(^[a-zA-Z_][a-zA-Z0-9_])*\\w+";
 
-        String iden = "_ soyunindet 03495840958390532";
+        String iden = "expresion | termino expresion1 => _";
 
 
         Pattern p = Pattern.compile(identifiersRegex);
