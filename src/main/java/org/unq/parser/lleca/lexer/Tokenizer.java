@@ -128,7 +128,7 @@ public class Tokenizer {
         for (String symbol: reservedSymbols) {
             if (file.startsWith(symbol)){
                 return true;
-            };
+            }
         }
         return false;
     }
