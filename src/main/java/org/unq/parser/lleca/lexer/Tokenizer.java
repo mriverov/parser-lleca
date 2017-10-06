@@ -17,7 +17,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 public class Tokenizer {
     private File file;
@@ -44,16 +43,16 @@ public class Tokenizer {
             for(String line; (line = reader.readLine()) != null; ) {
                 lines = lines+line+" ";
             }
-            processFile(lines);
+            ParseResult result = processFile(lines);
+            tokens.forEach(token-> System.out.println(token));
+            return result;
+
         } catch (IOException e) {
             return new ParseResult(Result.ERROR, "Could not read file", Optional.of("Trying to read file to tokenize"));
         }
-
-        tokens.forEach(token-> System.out.println(token));
-        return new ParseResult(Result.OK, "Lexer finish successfully", Optional.empty());
     }
 
-    private void processFile(String file) {
+    private ParseResult processFile(String file) {
         //List<String> keyWordsRegex = this.keywords.getReservedKeywords().stream().map(keyWord -> "^" + keyWord).collect(toList());
         List<String> reservedSymbolsRegex = this.symbols.getReservedSymbols().stream().map(symbol -> "^" + symbol).collect(toList());
         List<String> globalSymbolsRegex = this.globalSymbols.getGsymbols().stream().map(symbol -> "^" + symbol).collect(toList());
@@ -107,9 +106,12 @@ public class Tokenizer {
            }
 
 
-           else file = "";
+           else {
+                return new ParseResult(Result.ERROR,  "Could not parse file", Optional.of("There is a lexical error near "+file.substring(0,10)));
+            }
 
         }
+        return new ParseResult(Result.OK, "Lexer finish successfully", Optional.empty());
     }
 
     private String[] splitSymbols(List<String> reservedSymbols, String file) {
