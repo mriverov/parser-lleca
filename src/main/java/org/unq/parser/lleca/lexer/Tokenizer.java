@@ -4,8 +4,8 @@ import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.unq.parser.lleca.lexer.tokens.*;
 import org.unq.parser.lleca.lexer.tokens.reserved.GlobalSymbols;
-import org.unq.parser.lleca.lexer.tokens.reserved.Keywords;
-import org.unq.parser.lleca.lexer.tokens.reserved.Symbols;
+import org.unq.parser.lleca.lexer.tokens.reserved.ReservedKeywords;
+import org.unq.parser.lleca.lexer.tokens.reserved.ReservedSymbols;
 import org.unq.parser.lleca.status.ParseResult;
 import org.unq.parser.lleca.status.Result;
 
@@ -22,13 +22,13 @@ import static java.util.stream.Collectors.toList;
 public class Tokenizer {
     private File file;
     private List<Token> tokens = new ArrayList<>();
-    private Symbols symbols;
-    private Keywords keywords;
+    private ReservedSymbols symbols;
+    private ReservedKeywords keywords;
     private GlobalSymbols globalSymbols = new GlobalSymbols();
 
 
 
-    public Tokenizer(File file, Symbols symbols, Keywords keywords) {
+    public Tokenizer(File file, ReservedSymbols symbols, ReservedKeywords keywords) {
         this.file = file;
         this.symbols = symbols;
         this.keywords = keywords;
@@ -160,7 +160,7 @@ public class Tokenizer {
         return this.keywords.getReservedKeywords().contains(token);
     }
 
-    private boolean isReservedSymbol(String character, Symbols symbols) {
+    private boolean isReservedSymbol(String character, ReservedSymbols symbols) {
         return symbols.getReservedSymbols().contains(character);
     }
 

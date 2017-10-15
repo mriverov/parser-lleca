@@ -2,17 +2,14 @@ package org.unq.parser.lleca.lexer;
 
 import javafx.util.Pair;
 import org.unq.parser.lleca.lexer.tokens.Token;
-import org.unq.parser.lleca.lexer.tokens.reserved.Keywords;
-import org.unq.parser.lleca.lexer.tokens.reserved.Symbols;
+import org.unq.parser.lleca.lexer.tokens.reserved.ReservedKeywords;
+import org.unq.parser.lleca.lexer.tokens.reserved.ReservedSymbols;
 import org.unq.parser.lleca.status.ParseResult;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -30,7 +27,7 @@ public class App {
         llecaKeyWords.add("STRING");
         llecaKeyWords.add("NUM");
 
-        Keywords llecaK = new Keywords(llecaKeyWords);
+        ReservedKeywords llecaK = new ReservedKeywords(llecaKeyWords);
 
         List<String> llecaSymbols = new ArrayList<>();
         llecaSymbols.add("|");
@@ -46,9 +43,9 @@ public class App {
         //test(llecaKeyWords, llecaSymbols);
 
 
-        Symbols llecaS = new Symbols(llecaSymbols);
+        ReservedSymbols llecaS = new ReservedSymbols(llecaSymbols);
 
-        File gramatica = new File("./files/test.txt");
+        File gramatica = new File("./files/cucaracha.ll");
         Tokenizer elLexer = new Tokenizer(gramatica, llecaS, llecaK);
 
         Pair<ParseResult,List<Token>> tokens = elLexer.tokenize();
