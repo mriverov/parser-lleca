@@ -1,5 +1,6 @@
 package org.unq.parser.lleca.lexer;
 
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.unq.parser.lleca.lexer.tokens.*;
 import org.unq.parser.lleca.lexer.tokens.reserved.GlobalSymbols;
@@ -33,9 +34,9 @@ public class Tokenizer {
         this.keywords = keywords;
     }
 
-    public ParseResult tokenize(){
+    public Pair<ParseResult, List<Token>> tokenize(){
         if(file == null){
-            return new ParseResult(Result.ERROR, "File not defined", Optional.of("Trying to get file to tokenize"));
+            return new Pair<>(new ParseResult(Result.ERROR, "File not defined", Optional.of("Trying to get file to tokenize")), new ArrayList<>());
         }
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file.getAbsoluteFile()));
@@ -44,11 +45,10 @@ public class Tokenizer {
                 lines = lines+line+" ";
             }
             ParseResult result = processFile(lines);
-            tokens.forEach(token-> System.out.println(token));
-            return result;
+            return new Pair<>(result, tokens);
 
         } catch (IOException e) {
-            return new ParseResult(Result.ERROR, "Could not read file", Optional.of("Trying to read file to tokenize"));
+            return new Pair<>(new ParseResult(Result.ERROR, "Could not read file", Optional.of("Trying to read file to tokenize")), new ArrayList<Token>());
         }
     }
 
@@ -120,7 +120,7 @@ public class Tokenizer {
                 String sy = file.substring(0,symbol.length());
                 String rest = file.substring(symbol.length());
                 return new String[]{sy, rest};
-            };
+            }
         }
         return null;
     }

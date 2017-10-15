@@ -16,6 +16,6 @@ public class TokenIdentifier implements Token {
     }
 
     public String toString(){
-        return "<indentificador> "+ value;
+        return "<identificador> "+ value;
     }
 }

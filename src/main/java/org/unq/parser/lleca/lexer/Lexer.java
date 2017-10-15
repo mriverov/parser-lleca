@@ -1,5 +1,6 @@
 package org.unq.parser.lleca.lexer;
 
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.unq.parser.lleca.lexer.tokens.*;
 import org.unq.parser.lleca.lexer.tokens.reserved.GlobalSymbols;
@@ -28,7 +29,7 @@ public class Lexer {
         this.file = fileToTokenize;
     }
 
-    public ParseResult tokenize(Symbols symbols, Keywords keywords){
+    public Pair<ParseResult, List<Token>> tokenize(Symbols symbols, Keywords keywords){
        Tokenizer tokenizer = new Tokenizer(file, symbols, keywords);
        return tokenizer.tokenize();
     }
