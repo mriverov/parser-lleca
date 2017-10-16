@@ -1,5 +1,3 @@
-"hola \"mundo\"."
-
 grammar
 | rule grammar => Cons($1, $2)
 | /*EMPTY*/    => Nil

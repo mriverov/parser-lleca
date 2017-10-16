@@ -1,6 +1,7 @@
 package org.unq.parser.lleca.lexer;
 
 import javafx.util.Pair;
+import org.unq.parser.lleca.grammar.lleca.model.Parser;
 import org.unq.parser.lleca.lexer.tokens.Token;
 import org.unq.parser.lleca.lexer.tokens.reserved.ReservedKeywords;
 import org.unq.parser.lleca.lexer.tokens.reserved.ReservedSymbols;
@@ -45,13 +46,17 @@ public class App {
 
         ReservedSymbols llecaS = new ReservedSymbols(llecaSymbols);
 
-        File gramatica = new File("./files/alumnos.ll");
+        File gramatica = new File("./files/lleca.ll");
         Tokenizer elLexer = new Tokenizer(gramatica, llecaS, llecaK);
 
         Pair<ParseResult,List<Token>> tokens = elLexer.tokenize();
         tokens.getValue().forEach(token-> System.out.println(token));
 
         System.out.println(tokens.getKey());
+
+        Parser p = new Parser(tokens.getValue());
+        p.parse();
+
 
 
         /*String pep = "/*";
