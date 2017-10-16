@@ -9,4 +9,8 @@ public class Expansion {
 
     // lista de simbolos que pueden ser cadenas o identificadores
     List<Symbol> symbols;
+
+    public Expansion(List<Symbol> symbols) {
+        this.symbols = symbols;
+    }
 }
