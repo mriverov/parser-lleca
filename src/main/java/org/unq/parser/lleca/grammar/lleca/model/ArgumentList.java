@@ -10,8 +10,8 @@ public class ArgumentList {
     private Term term;
     private Optional<ArgumentListCont> argumentListCont;
 
-    public ArgumentList(Term term, ArgumentListCont argumentListCont){
+    public ArgumentList(Term term, Optional<ArgumentListCont> argumentListCont){
         this.term = term;
-        this.argumentListCont = Optional.of(argumentListCont);
+        this.argumentListCont = argumentListCont;
     }
 }

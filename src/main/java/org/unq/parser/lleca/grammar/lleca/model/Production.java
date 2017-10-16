@@ -7,14 +7,14 @@ import java.util.Optional;
  */
 public class Production {
 
-    // barra vertical, expansion seguida por accion (esta dada por una flecha y un termino)
     private String pipe = "|";
     private Optional<Expansion> expansion = Optional.empty();
     private String arrow = "=>";
     private Term term;
 
-    public Production(Expansion expansion, Term term){
-        this.expansion = Optional.of(expansion);
+    public Production(Optional<Expansion> expansion, Term term){
+        this.expansion = expansion;
         this.term = term;
     }
+
 }

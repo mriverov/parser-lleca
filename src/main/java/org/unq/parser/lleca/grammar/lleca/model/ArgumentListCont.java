@@ -1,5 +1,6 @@
 package org.unq.parser.lleca.grammar.lleca.model;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -8,11 +9,9 @@ import java.util.Optional;
 public class ArgumentListCont {
 
     private String comma = ",";
-    private Term term;
-    private Optional<ArgumentListCont> argumentListCont = Optional.empty();
+    private List<Term> term;
 
-    public ArgumentListCont(Term term, ArgumentListCont argumentListCont){
+    public ArgumentListCont(List<Term> term){
         this.term = term;
-        this.argumentListCont = Optional.of(argumentListCont);
     }
 }

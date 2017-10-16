@@ -27,9 +27,9 @@ public class Term {
         isHole = Boolean.TRUE;
     }
 
-    public Term(Identifier identifier, Argument argument){
+    public Term(Identifier identifier, Optional<Argument> argument){
         this.identifier = Optional.of(identifier);
-        this.argument = Optional.of(argument);
+        this.argument = argument;
         isIdentifierAndArgument = Boolean.TRUE;
     }
 
@@ -43,9 +43,9 @@ public class Term {
         isNumeric = Boolean.TRUE;
     }
 
-    public Term(Integer num, Substitution substitution) {
+    public Term(Integer num, Optional<Substitution> substitution) {
         this.num = Optional.of(num);
-        this.substitution = Optional.of(substitution);
+        this.substitution = substitution;
         isNumericAndSubstitution = Boolean.TRUE;
     }
 }
