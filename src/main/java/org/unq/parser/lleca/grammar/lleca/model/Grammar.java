@@ -9,4 +9,7 @@ public class Grammar {
 
     List<Rule> rules;
 
+    public Grammar(List<Rule> rules) {
+        this.rules = rules;
+    }
 }
