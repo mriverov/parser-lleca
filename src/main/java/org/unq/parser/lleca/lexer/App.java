@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
+import static org.unq.parser.lleca.grammar.lleca.parser.ParseHelper.KEYWORDS;
+import static org.unq.parser.lleca.grammar.lleca.parser.ParseHelper.SYMBOLS;
 
 /**
  * Created by mtejeda on 26/09/17.
@@ -49,7 +51,7 @@ public class App {
 
         ReservedSymbols llecaS = new ReservedSymbols(llecaSymbols);
 
-        File gramatica = new File("./files/alumnos.ll");
+        File gramatica = new File("./tests_lleca/cucaracha/gramatica.ll");
         Tokenizer elLexer = new Tokenizer(gramatica, llecaS, llecaK);
 
         Pair<ParseResult,List<Token>> tokens = elLexer.tokenize();
@@ -61,6 +63,21 @@ public class App {
         Grammar grammar = p.parse();
         Map result = ParseHelper.getKeywordsAndSymbols(grammar);
         System.out.println(result);
+
+
+        ArrayList<String> kw = (ArrayList<String>) result.get(KEYWORDS);
+        ReservedKeywords rkwc = new ReservedKeywords(kw);
+
+
+        ArrayList<String> sy = (ArrayList<String>) result.get(SYMBOLS);
+        ReservedSymbols symc = new ReservedSymbols(sy);
+        File input = new File("./tests_lleca/cucaracha/test00.input");
+        Tokenizer tokenCcacha = new Tokenizer(input,  symc, rkwc);
+
+        Pair<ParseResult,List<Token>> cucaracha =  tokenCcacha.tokenize();
+        cucaracha.getValue().forEach(token-> System.out.println(token));
+
+
 
 
 
