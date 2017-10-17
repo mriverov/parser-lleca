@@ -41,4 +41,16 @@ public class Symbol {
     public Boolean isString(){
         return isString;
     }
+
+    public Optional<Identifier> getIdentifier() {
+        return identifier;
+    }
+
+    public Optional<Keyword> getKeyword() {
+        return keyword;
+    }
+
+    public Optional<String> getString_() {
+        return string_;
+    }
 }

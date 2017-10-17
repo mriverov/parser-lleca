@@ -17,4 +17,8 @@ public class Production {
         this.term = term;
     }
 
+    public Optional<Expansion> getExpantion(){
+        return expansion;
+    }
+
 }

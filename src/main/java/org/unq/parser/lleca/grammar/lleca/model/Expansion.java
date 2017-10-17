@@ -13,4 +13,8 @@ public class Expansion {
     public Expansion(List<Symbol> symbols) {
         this.symbols = symbols;
     }
+
+    public List<Symbol> getSymbols(){
+        return symbols;
+    }
 }

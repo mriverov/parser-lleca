@@ -15,4 +15,8 @@ public class Rule {
         this.identifier = identifier;
         this.productions = productions;
     }
+
+    public List<Production> getProductions(){
+        return productions;
+    }
 }

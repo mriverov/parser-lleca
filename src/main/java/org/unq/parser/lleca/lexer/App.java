@@ -1,7 +1,7 @@
 package org.unq.parser.lleca.lexer;
 
 import javafx.util.Pair;
-import org.unq.parser.lleca.grammar.lleca.model.Parser;
+import org.unq.parser.lleca.grammar.lleca.parser.Parser;
 import org.unq.parser.lleca.lexer.tokens.Token;
 import org.unq.parser.lleca.lexer.tokens.reserved.ReservedKeywords;
 import org.unq.parser.lleca.lexer.tokens.reserved.ReservedSymbols;

@@ -12,4 +12,8 @@ public class Grammar {
     public Grammar(List<Rule> rules) {
         this.rules = rules;
     }
+
+    public List<Rule> getRules(){
+        return rules;
+    }
 }

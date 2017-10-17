@@ -1,5 +1,6 @@
-package org.unq.parser.lleca.grammar.lleca.model;
+package org.unq.parser.lleca.grammar.lleca.parser;
 
+import org.unq.parser.lleca.grammar.lleca.model.*;
 import org.unq.parser.lleca.lexer.tokens.Token;
 import org.unq.parser.lleca.lexer.tokens.TokenIdentifier;
 import org.unq.parser.lleca.lexer.tokens.TokenNumeric;
