@@ -129,6 +129,9 @@ public class Parser {
         }else if(currentToken instanceof  TokenIdentifier){
             Identifier identifier = new Identifier(currentToken.value());
             globalTokenIndex++;
+            if(globalTokenIndex >= tokens.size()){
+                return new Term(identifier, Optional.empty());
+            }
             currentToken = tokens.get(globalTokenIndex);
             if ("|".equals(currentToken.value())){
                 return new Term(identifier, Optional.empty());
@@ -195,9 +198,7 @@ public class Parser {
         }else if(currentToken instanceof TokenNumeric){
             globalTokenIndex++;
             return new Term(Integer.valueOf(currentToken.value()));
-        }
-
-        else{
+        } else{
             if("$".equals(currentToken.value())){
                 globalTokenIndex++;
                 currentToken = tokens.get(globalTokenIndex);

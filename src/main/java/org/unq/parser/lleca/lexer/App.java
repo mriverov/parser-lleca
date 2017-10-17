@@ -1,6 +1,8 @@
 package org.unq.parser.lleca.lexer;
 
 import javafx.util.Pair;
+import org.unq.parser.lleca.grammar.lleca.model.Grammar;
+import org.unq.parser.lleca.grammar.lleca.parser.ParseHelper;
 import org.unq.parser.lleca.grammar.lleca.parser.Parser;
 import org.unq.parser.lleca.lexer.tokens.Token;
 import org.unq.parser.lleca.lexer.tokens.reserved.ReservedKeywords;
@@ -10,6 +12,7 @@ import org.unq.parser.lleca.status.ParseResult;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
@@ -46,7 +49,7 @@ public class App {
 
         ReservedSymbols llecaS = new ReservedSymbols(llecaSymbols);
 
-        File gramatica = new File("./files/lleca.ll");
+        File gramatica = new File("./files/alumnos.ll");
         Tokenizer elLexer = new Tokenizer(gramatica, llecaS, llecaK);
 
         Pair<ParseResult,List<Token>> tokens = elLexer.tokenize();
@@ -55,7 +58,11 @@ public class App {
         System.out.println(tokens.getKey());
 
         Parser p = new Parser(tokens.getValue());
-        p.parse();
+        Grammar grammar = p.parse();
+        Map result = ParseHelper.getKeywordsAndSymbols(grammar);
+        System.out.println(result);
+
+
 
 
 
