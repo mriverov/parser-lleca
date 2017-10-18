@@ -6,11 +6,11 @@ import java.util.List;
 /**
  * Created by mrivero on 24/9/17.
  */
-public class Symbols {
+public class ReservedSymbols {
 
     private List<String> reservedSymbols;
 
-    public Symbols(List<String> reservedSymbols){
+    public ReservedSymbols(List<String> reservedSymbols){
         reservedSymbols.sort((s1,s2) -> s2.length() - s1.length());
         this.reservedSymbols = reservedSymbols;
     }

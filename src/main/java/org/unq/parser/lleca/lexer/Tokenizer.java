@@ -1,10 +1,11 @@
 package org.unq.parser.lleca.lexer;
 
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.unq.parser.lleca.lexer.tokens.*;
 import org.unq.parser.lleca.lexer.tokens.reserved.GlobalSymbols;
-import org.unq.parser.lleca.lexer.tokens.reserved.Keywords;
-import org.unq.parser.lleca.lexer.tokens.reserved.Symbols;
+import org.unq.parser.lleca.lexer.tokens.reserved.ReservedKeywords;
+import org.unq.parser.lleca.lexer.tokens.reserved.ReservedSymbols;
 import org.unq.parser.lleca.status.ParseResult;
 import org.unq.parser.lleca.status.Result;
 
@@ -21,21 +22,21 @@ import static java.util.stream.Collectors.toList;
 public class Tokenizer {
     private File file;
     private List<Token> tokens = new ArrayList<>();
-    private Symbols symbols;
-    private Keywords keywords;
+    private ReservedSymbols symbols;
+    private ReservedKeywords keywords;
     private GlobalSymbols globalSymbols = new GlobalSymbols();
 
 
 
-    public Tokenizer(File file, Symbols symbols, Keywords keywords) {
+    public Tokenizer(File file, ReservedSymbols symbols, ReservedKeywords keywords) {
         this.file = file;
         this.symbols = symbols;
         this.keywords = keywords;
     }
 
-    public ParseResult tokenize(){
+    public Pair<ParseResult, List<Token>> tokenize(){
         if(file == null){
-            return new ParseResult(Result.ERROR, "File not defined", Optional.of("Trying to get file to tokenize"));
+            return new Pair<>(new ParseResult(Result.ERROR, "File not defined", Optional.of("Trying to get file to tokenize")), new ArrayList<>());
         }
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file.getAbsoluteFile()));
@@ -44,18 +45,17 @@ public class Tokenizer {
                 lines = lines+line+" ";
             }
             ParseResult result = processFile(lines);
-            tokens.forEach(token-> System.out.println(token));
-            return result;
+            return new Pair<>(result, tokens);
 
         } catch (IOException e) {
-            return new ParseResult(Result.ERROR, "Could not read file", Optional.of("Trying to read file to tokenize"));
+            return new Pair<>(new ParseResult(Result.ERROR, "Could not read file", Optional.of("Trying to read file to tokenize")), new ArrayList<Token>());
         }
     }
 
     private ParseResult processFile(String file) {
         //List<String> keyWordsRegex = this.keywords.getReservedKeywords().stream().map(keyWord -> "^" + keyWord).collect(toList());
-        List<String> reservedSymbolsRegex = this.symbols.getReservedSymbols().stream().map(symbol -> "^" + symbol).collect(toList());
-        List<String> globalSymbolsRegex = this.globalSymbols.getGsymbols().stream().map(symbol -> "^" + symbol).collect(toList());
+        //List<String> reservedSymbolsRegex = this.symbols.getReservedSymbols().stream().map(symbol -> "^" + symbol).collect(toList());
+        //List<String> globalSymbolsRegex = this.globalSymbols.getGsymbols().stream().map(symbol -> "^" + symbol).collect(toList());
         //String identifiersRegex = "^[a-zA-Z_][a-zA-Z0-9_]+";
         String identifiersRegex = "(^[a-zA-Z_][a-zA-Z0-9_])*\\w+";
         String numberRegex = "^[0-9]+";
@@ -107,7 +107,8 @@ public class Tokenizer {
 
 
            else {
-                return new ParseResult(Result.ERROR,  "Could not parse file", Optional.of("There is a lexical error near "+file.substring(0,10)));
+               int limit = file.length() > 10 ? 10 : file.length();
+                return new ParseResult(Result.ERROR,  "Could not parse file", Optional.of("There is a lexical error near "+file.substring(0,limit)));
             }
 
         }
@@ -120,7 +121,7 @@ public class Tokenizer {
                 String sy = file.substring(0,symbol.length());
                 String rest = file.substring(symbol.length());
                 return new String[]{sy, rest};
-            };
+            }
         }
         return null;
     }
@@ -160,7 +161,7 @@ public class Tokenizer {
         return this.keywords.getReservedKeywords().contains(token);
     }
 
-    private boolean isReservedSymbol(String character, Symbols symbols) {
+    private boolean isReservedSymbol(String character, ReservedSymbols symbols) {
         return symbols.getReservedSymbols().contains(character);
     }
 

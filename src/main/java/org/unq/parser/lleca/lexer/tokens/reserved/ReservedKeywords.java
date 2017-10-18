@@ -5,11 +5,11 @@ import java.util.List;
 /**
  * Created by mrivero on 24/9/17.
  */
-public class Keywords {
+public class ReservedKeywords {
 
     private List<String> reservedKeywords;
 
-    public Keywords(List<String> reservedKeywords){
+    public ReservedKeywords(List<String> reservedKeywords){
         this.reservedKeywords = reservedKeywords;
     }
 
