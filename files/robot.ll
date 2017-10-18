@@ -1,5 +1,5 @@
 programa
-| /* programa vaco */ => Fin
+| /* programa vacio */ => Fin
 | comando programa => Secuencia($1, $2)
 
 comando
