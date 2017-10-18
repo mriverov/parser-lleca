@@ -10,6 +10,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * Created by mrivero on 17/10/17.
  */
@@ -26,15 +28,21 @@ public class ParseHelper {
         grammar.getRules().forEach(rule -> {
             rule.getProductions().forEach(p -> {
                 p.getExpantion().ifPresent(expansion -> {
-                    getStrings(expansion).collect(Collectors.toList());
+                    getStrings(expansion).collect(toList());
                     keywordsAndSymbols.get(KEYWORDS).
-                            addAll(getStrings(expansion).filter(k -> k.chars().anyMatch(Character::isLetter)).collect(Collectors.toList()));
+                            addAll(getStrings(expansion).filter(k -> k.chars().anyMatch(Character::isLetter)).collect(toList()));
                     keywordsAndSymbols.get(SYMBOLS).
-                            addAll(getStrings(expansion).filter(k -> k.chars().allMatch(h -> !Character.isLetter(h))).collect(Collectors.toList()));
+                            addAll(getStrings(expansion).filter(k -> k.chars().allMatch(h -> !Character.isLetter(h))).collect(toList()));
                 });
             });
 
         });
+
+        List<String> strings = keywordsAndSymbols.get(SYMBOLS);
+        keywordsAndSymbols.put(SYMBOLS, strings.stream().map(s -> s.replace("\"", "")).collect(toList()));
+
+        strings = keywordsAndSymbols.get(KEYWORDS);
+        keywordsAndSymbols.put(KEYWORDS, strings.stream().map(s -> s.replace("\"", "")).collect(toList()));
 
         return keywordsAndSymbols;
 
@@ -42,7 +50,7 @@ public class ParseHelper {
 
     private static Stream<String> getStrings(Expansion expansion) {
         List<Symbol> collect = expansion.getSymbols().stream().
-                filter(s -> s.isString() && s.getString_().isPresent()).collect(Collectors.toList());
+                filter(s -> s.isString() && s.getString_().isPresent()).collect(toList());
 
         return collect.stream().map(s -> s.getString_().get());
     }

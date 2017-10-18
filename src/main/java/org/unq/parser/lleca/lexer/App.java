@@ -45,10 +45,6 @@ public class App {
         llecaSymbols.add("[");
         llecaSymbols.add("]");
 
-
-        //test(llecaKeyWords, llecaSymbols);
-
-
         ReservedSymbols llecaS = new ReservedSymbols(llecaSymbols);
 
         File gramatica = new File("./tests_lleca/cucaracha/gramatica.ll");
@@ -61,91 +57,23 @@ public class App {
 
         Parser p = new Parser(tokens.getValue());
         Grammar grammar = p.parse();
-        Map result = ParseHelper.getKeywordsAndSymbols(grammar);
+        Map<String, List<String>>  result = ParseHelper.getKeywordsAndSymbols(grammar);
         System.out.println(result);
 
 
-        ArrayList<String> kw = (ArrayList<String>) result.get(KEYWORDS);
+        List<String> kw = result.get(KEYWORDS);
         ReservedKeywords rkwc = new ReservedKeywords(kw);
 
 
-        ArrayList<String> sy = (ArrayList<String>) result.get(SYMBOLS);
+        List<String> sy = result.get(SYMBOLS);
         ReservedSymbols symc = new ReservedSymbols(sy);
-        File input = new File("./tests_lleca/cucaracha/test00.input");
+        File input = new File("./tests_lleca/cucaracha/test29.input");
         Tokenizer tokenCcacha = new Tokenizer(input,  symc, rkwc);
 
         Pair<ParseResult,List<Token>> cucaracha =  tokenCcacha.tokenize();
         cucaracha.getValue().forEach(token-> System.out.println(token));
-
-
-
-
-
-
-
-        /*String pep = "/*";
-        String juan = "hola soy un /*comen";
-        System.out.println(juan.startsWith(pep));
-
-    /*    Pattern p = Pattern.compile("^\\||");
-        Matcher m = p.matcher("||hola");
-        m.find();
-        String token = m.group( 0 );
-*/
-
-    /*    String identifiersRegex = "(^[a-zA-Z_][a-zA-Z0-9_])*\\w+";
-
-        String iden = "expresion | termino expresion1 => _";
-
-
-        Pattern p = Pattern.compile(identifiersRegex);
-        Matcher m = p.matcher(iden);
-        List<String> tokens = new LinkedList<>();
-
-        while(m.find()) {
-            String token = m.group( 0 );
-            //group 0 is always the entire match
-            //k es el resto
-            System.out.printf(token +"\n");
-            String k =iden.substring(token.length(),iden.length());
-            //token es el string del token
-            tokens.add(token);
-        }
-
-*/
-
-        // Tokenizer de Java
-        /* StringTokenizer st =  new StringTokenizer("\"Hola \"mundo\"\"");
-
-
-        while (st.hasMoreTokens()) {
-            System.out.println(st.nextToken());
-        }*/
-
-
     }
 
-    private static void test(List<String> llecaKeyWords, List<String> llecaSymbols) {
 
-
-        Set<String> keyWordsRegex = llecaKeyWords.stream().map(keyWord -> "^" + keyWord + ".*").collect(toSet());
-        Set<String> reservedSymbolsRegex = llecaSymbols.stream().map(symbol -> "^" + symbol+ ".*").collect(toSet());
-        keyWordsRegex.add("/\\*([^*]|[\\r\\n])*\\*/");
-
-
-        String palabra = "=> Cons($1";
-
-
-        for (String wordsRegex : reservedSymbolsRegex) {
-            System.out.println(palabra.matches(wordsRegex));
-        }
-
-
-
-
-        palabra = "";
-
-
-    }
 
 }

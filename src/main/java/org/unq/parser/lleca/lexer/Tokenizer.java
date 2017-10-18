@@ -54,8 +54,8 @@ public class Tokenizer {
 
     private ParseResult processFile(String file) {
         //List<String> keyWordsRegex = this.keywords.getReservedKeywords().stream().map(keyWord -> "^" + keyWord).collect(toList());
-        List<String> reservedSymbolsRegex = this.symbols.getReservedSymbols().stream().map(symbol -> "^" + symbol).collect(toList());
-        List<String> globalSymbolsRegex = this.globalSymbols.getGsymbols().stream().map(symbol -> "^" + symbol).collect(toList());
+        //List<String> reservedSymbolsRegex = this.symbols.getReservedSymbols().stream().map(symbol -> "^" + symbol).collect(toList());
+        //List<String> globalSymbolsRegex = this.globalSymbols.getGsymbols().stream().map(symbol -> "^" + symbol).collect(toList());
         //String identifiersRegex = "^[a-zA-Z_][a-zA-Z0-9_]+";
         String identifiersRegex = "(^[a-zA-Z_][a-zA-Z0-9_])*\\w+";
         String numberRegex = "^[0-9]+";
@@ -107,7 +107,8 @@ public class Tokenizer {
 
 
            else {
-                return new ParseResult(Result.ERROR,  "Could not parse file", Optional.of("There is a lexical error near "+file.substring(0,10)));
+               int limit = file.length() > 10 ? 10 : file.length();
+                return new ParseResult(Result.ERROR,  "Could not parse file", Optional.of("There is a lexical error near "+file.substring(0,limit)));
             }
 
         }
