@@ -40,10 +40,21 @@ public class ParseHelper {
 
         List<String> strings = keywordsAndSymbols.get(SYMBOLS);
         keywordsAndSymbols.put(SYMBOLS, strings.stream().map(s -> s.replace("\"", "")).collect(toList()));
+        List<String> al = keywordsAndSymbols.get(SYMBOLS);
+        Set<String> hs = new HashSet<>();
+        hs.addAll(al);
+        al.clear();
+        al.addAll(hs);
+        keywordsAndSymbols.put(SYMBOLS, al);
 
         strings = keywordsAndSymbols.get(KEYWORDS);
         keywordsAndSymbols.put(KEYWORDS, strings.stream().map(s -> s.replace("\"", "")).collect(toList()));
-
+        List<String> al1 = keywordsAndSymbols.get(KEYWORDS);
+        Set<String> hs2 = new HashSet<>();
+        hs2.addAll(al1);
+        al1.clear();
+        al1.addAll(hs2);
+        keywordsAndSymbols.put(KEYWORDS,al1);
         return keywordsAndSymbols;
 
     }

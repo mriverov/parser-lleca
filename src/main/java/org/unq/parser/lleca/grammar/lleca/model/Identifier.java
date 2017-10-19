@@ -10,4 +10,10 @@ public class Identifier {
     public Identifier(String identifier){
         this.identifier = identifier;
     }
+
+    public String toString() {
+        return identifier;
+    }
+
+
 }
