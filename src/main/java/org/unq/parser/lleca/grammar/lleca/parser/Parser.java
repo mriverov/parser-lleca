@@ -205,7 +205,11 @@ public class Parser {
                 if(currentToken instanceof TokenNumeric){
                     Integer numericValue = Integer.valueOf(currentToken.value());
                     globalTokenIndex++;
+                    if (globalTokenIndex == tokens.size()){
+                        return new Term(numericValue, Optional.empty());
+                    }
                     currentToken = tokens.get(globalTokenIndex);
+
                     if("[".equals(currentToken.value())){
                         globalTokenIndex++;
                         Term substitutionTerm = getTerm();
