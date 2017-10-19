@@ -28,7 +28,6 @@ public class ParseHelper {
         grammar.getRules().forEach(rule -> {
             rule.getProductions().forEach(p -> {
                 p.getExpantion().ifPresent(expansion -> {
-                    getStrings(expansion).collect(toList());
                     keywordsAndSymbols.get(KEYWORDS).
                             addAll(getStrings(expansion).filter(k -> k.chars().anyMatch(Character::isLetter)).collect(toList()));
                     keywordsAndSymbols.get(SYMBOLS).

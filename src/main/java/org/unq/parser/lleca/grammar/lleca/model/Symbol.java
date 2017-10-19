@@ -30,6 +30,16 @@ public class Symbol {
         isString = Boolean.TRUE;
     }
 
+    public String getCurrentValue(){
+        if(isIdentifier){
+            return getIdentifier().get().getValue();
+        }else if(isKeyword){
+            return getKeyword().get().getValue();
+        }else {
+            return getString_().get();
+        }
+    }
+
     public Boolean isIdentifier(){
         return isIdentifier;
     }

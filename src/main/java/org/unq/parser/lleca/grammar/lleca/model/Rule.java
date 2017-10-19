@@ -19,4 +19,8 @@ public class Rule {
     public List<Production> getProductions(){
         return productions;
     }
+
+    public Identifier getIdentifier(){
+        return identifier;
+    }
 }
