@@ -16,4 +16,9 @@ public class Identifier {
     }
 
 
+    public String getValue(){
+        return identifier;
+    }
+
+
 }

@@ -53,4 +53,14 @@ public class Symbol {
     public Optional<String> getString_() {
         return string_;
     }
+
+    public String getCurrentValue(){
+        if(isIdentifier){
+            return getIdentifier().get().getValue();
+        }else if(isKeyword){
+            return getKeyword().get().getValue();
+        }else {
+            return getString_().get();
+        }
+    }
 }

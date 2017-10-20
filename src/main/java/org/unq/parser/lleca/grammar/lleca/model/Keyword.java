@@ -14,4 +14,8 @@ public enum Keyword {
     }
 
 
+    public String getValue(){
+        return value;
+    }
+
 }

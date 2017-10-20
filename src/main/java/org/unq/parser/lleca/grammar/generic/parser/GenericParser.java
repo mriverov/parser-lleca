@@ -16,12 +16,14 @@ public class GenericParser {
     private Grammar grammar;
     private List<String> nonTerminals = new ArrayList<>();
     private List<String> terminals = new ArrayList<>();
-    private FirstCalculator fc;
+    private FirstCalculator fc = new FirstCalculator();
+    private FollowCalculator foc = new FollowCalculator();
     private ParseHelper ph = new ParseHelper();
+    private String initialSymbol ;
 
     public GenericParser(Grammar grammar) {
         this.grammar = grammar;
-        this.fc = new FirstCalculator(grammar);
+        this.initialSymbol = grammar.getRules().get(0).getIdentifier().toString();
     }
 
 
@@ -48,7 +50,7 @@ public class GenericParser {
         x.get(SYMBOLS).forEach(symbol -> {
             terminals.add(symbol);
         });
-        this.grammar.getRules().forEach(rule -> {
+        /*this.grammar.getRules().forEach(rule -> {
             rule.getProductions().forEach(production -> {
                 production.getExpantion().ifPresent(expansion -> {
                     expansion.getSymbols().forEach(symbol -> {
@@ -59,12 +61,20 @@ public class GenericParser {
                     });
                 });
             });
-        });
+        });*/
+
+        terminals.add("NUM");
+        terminals.add("ID");
+        terminals.add("STRING");
+
 
     }
 
     public void parseGrammar(){
         this.calculateNonTerminals();
         this.calculateTerminals();
+
+        this.fc.calculateFirst(this.grammar, this.nonTerminals, this.terminals);
+
     }
 }
