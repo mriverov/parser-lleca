@@ -86,7 +86,7 @@ public class Parser {
                         }else if ("NUM".equals(currentToken.value())){
                             symbols.add(new Symbol(Keyword.NUM));
                         }else if (currentToken instanceof  TokenString){
-                            symbols.add(new Symbol(String.valueOf(currentToken.value())));
+                            symbols.add(new Symbol(currentToken.value().replace("\"", "")));
                         }else if (currentToken instanceof  TokenIdentifier) {
                             symbols.add(new Symbol(new Identifier(currentToken.value())));
                         }else{

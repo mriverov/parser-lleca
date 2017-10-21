@@ -1,14 +1,14 @@
 package org.unq.parser.lleca.grammar.generic.parser;
 
 import org.unq.parser.lleca.grammar.lleca.model.Grammar;
-import org.unq.parser.lleca.grammar.lleca.model.Production;
 import org.unq.parser.lleca.grammar.lleca.model.Symbol;
 
 import java.util.*;
 
 public class FirstCalculator {
 
-    private HashMap<String, List<String>> result = new HashMap<>();
+    private HashMap<String, Set<String>> result = new HashMap<>();
+    private List<String> nullables = new ArrayList<>();
 
     public FirstCalculator() {
 
@@ -16,74 +16,80 @@ public class FirstCalculator {
 
 
     public void calculateFirst(Grammar grammar, List<String> nonTerminals, List<String> terminals){
-
-        nonTerminals.forEach(nonTerm -> {
-            List<String> firsts = this.getFirsts(nonTerm, grammar, nonTerminals, terminals);
-            result.put(nonTerm, new ArrayList<String>());
+        List<String> nullables = this.getNullables(grammar);
+        nonTerminals.forEach(nt ->{
+            result.put(nt, new HashSet<>());
         });
+        nullables.forEach(nul -> System.out.println(nul));
+        int before = 0;
+        int after = 1000;
+        while (before != after){
 
-
-
-
-    }
-/*
-    private List<String> getFirsts(String nonTerm, Grammar grammar, List<String> nonTerminals) {
-        ArrayList<String> first = new ArrayList<>();
-        Boolean changes = true;
-
-        while (changes){
+            before = result.values().stream().mapToInt(list -> list.size()).sum();
             grammar.getRules().forEach(rule -> {
-                String nt = rule.getIdentifier().getValue();
+                rule.getProductions().forEach(production -> {
+                    String ident = rule.getIdentifier().getValue();
+                    if (!production.getExpantion().isPresent()){
 
-            });
-        }
-        return null;
-    }
+                            result.get(ident).add("EPSILON");
+                    }
+                    else{
+                        production.getExpantion().ifPresent(expansion -> {
+                            int ss = expansion.getSymbolsSize();
+                            for (int i = 0; i < ss; i++) {
+                                String currValue = expansion.getSymbols().get(i).getCurrentValue();
+                                if(!nullables.contains(currValue)
+                                        && terminals.contains(currValue)){
 
-*/
+                                        result.get(ident).add(currValue);
+                                        break;
 
+                                }
+                                if (!nullables.contains(currValue)
+                                        && nonTerminals.contains(currValue)){
+                                    result.get(ident).addAll(result.get(currValue));
+                                    break;
+                                }
+                                if (i == ss-1){
+                                    if(nullables.contains(currValue)){
 
-    private List<String> getFirsts(String nonTerm, Grammar grammar, List<String> nonTerminals, List<String> terminals) {
-        ArrayList<String> first = new ArrayList<>();
-        grammar.getRules().forEach(rule -> {
-            if (nonTerm.equals(rule.getIdentifier().toString())){
-                rule.getProductions().forEach(prod -> {
-                    first.addAll(getFirstsFromProd(prod));
+                                            result.get(ident).add("EPSILON");
+                                    }
+                                }
+                            }
+                        });
+                    }
                 });
-            }
+            });
+            after =  result.values().stream().mapToInt(list -> list.size()).sum();
+
+
+        }
+
+        result.forEach((s,l) -> {
+            System.out.printf("Terminal: ");
+            System.out.println(s);
+            System.out.println("FIRST:");
+            l.forEach(ll -> {
+                System.out.println(ll);
+            });
         });
-        return null;
-    }
-
-    private List<String> getFirstsFromProd(Production prod) {
-
-        return null;
     }
 
 
 
-    /*prod.getExpantion().ifPresent(expansion -> {
-                        Optional<Symbol> sym = expansion.getSymbols().stream().findFirst();
-                        if(sym.isPresent()){
-                            if (nonTerminals.contains(sym.get().getCurrentValue())){
-                                //si es un noterminal, puede pasar que sea anulable: en ese caso tengo que buscar los firsts del sig simbolo
-                                // si no fuera anulable: tengo que agregar sus FIRST
-                                first.addAll(getFirsts(sym.get().getCurrentValue(), grammar, nonTerminals));
-                            } else first.add(sym.get().getCurrentValue());
-                        }else{
-                            first.add("EPSILON");
-                        }
-                    })*/
-
-
-    private boolean isNullable(String nonTerm, Grammar grammar){
+    /*
+    * Método que calcula los símbolos anulables.
+    * */
+    private List<String> getNullables(Grammar grammar) {
         grammar.getRules().forEach(rule -> {
-            if (nonTerm.equals(rule.getIdentifier().toString())){
-                rule.getIdentifier();
-            }
-
+            rule.getProductions().forEach(prod -> {
+                if (!prod.getExpantion().isPresent()){
+                    nullables.add(rule.getIdentifier().getValue());
+                };
+            });
         });
-
-        return false;
+        return nullables;
     }
+
 }

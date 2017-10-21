@@ -17,4 +17,8 @@ public class Expansion {
     public List<Symbol> getSymbols(){
         return symbols;
     }
+
+    public int getSymbolsSize(){
+        return this.symbols.size();
+    }
 }

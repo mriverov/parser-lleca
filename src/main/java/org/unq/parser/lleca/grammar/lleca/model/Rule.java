@@ -1,5 +1,6 @@
 package org.unq.parser.lleca.grammar.lleca.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,5 +23,17 @@ public class Rule {
 
     public Identifier getIdentifier() {
         return identifier;
+    }
+
+
+    public List<String> toListString(){
+        List<String> rule = new ArrayList<>();
+        rule.add(this.identifier.getValue());
+
+        this.getProductions().forEach(prod ->{
+             rule.add(prod.toString());
+        });
+       return rule;
+
     }
 }
