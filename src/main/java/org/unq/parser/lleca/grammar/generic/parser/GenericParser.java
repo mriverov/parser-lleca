@@ -1,11 +1,10 @@
 package org.unq.parser.lleca.grammar.generic.parser;
 
 import org.unq.parser.lleca.grammar.lleca.model.Grammar;
+import org.unq.parser.lleca.grammar.lleca.model.Keyword;
 import org.unq.parser.lleca.grammar.lleca.parser.ParseHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.unq.parser.lleca.grammar.lleca.parser.ParseHelper.KEYWORDS;
 import static org.unq.parser.lleca.grammar.lleca.parser.ParseHelper.SYMBOLS;
@@ -16,10 +15,11 @@ public class GenericParser {
     private Grammar grammar;
     private List<String> nonTerminals = new ArrayList<>();
     private List<String> terminals = new ArrayList<>();
-    private FirstCalculator fc = new FirstCalculator();
-    private FollowCalculator foc = new FollowCalculator();
+    private List<String> nullables = new ArrayList<>();
+    private FirstCalculator fc;
+    private FollowCalculator foc;
     private ParseHelper ph = new ParseHelper();
-    private String initialSymbol ;
+    private String initialSymbol;
 
     public GenericParser(Grammar grammar) {
         this.grammar = grammar;
@@ -63,9 +63,9 @@ public class GenericParser {
             });
         });*/
 
-        terminals.add("NUM");
-        terminals.add("ID");
-        terminals.add("STRING");
+        terminals.add(Keyword.NUM.getValue());
+        terminals.add(Keyword.ID.getValue());
+        terminals.add(Keyword.STRING.getValue());
 
 
     }
@@ -73,8 +73,27 @@ public class GenericParser {
     public void parseGrammar(){
         this.calculateNonTerminals();
         this.calculateTerminals();
+        this.calculateNullables(grammar);
 
-        this.fc.calculateFirst(this.grammar, this.nonTerminals, this.terminals);
+        this.fc = new FirstCalculator(grammar, nullables);
 
+        HashMap<String, Set<String>> first = this.fc.calculateFirst(this.nonTerminals, this.terminals);
+
+        this.foc = new FollowCalculator(grammar, first, nullables);
+        this.foc.getFollow();
+
+    }
+
+    /*
+       * Método que calcula los símbolos anulables.
+       * */
+    private void calculateNullables(Grammar grammar) {
+        grammar.getRules().forEach(rule -> {
+            rule.getProductions().forEach(prod -> {
+                if (!prod.getExpantion().isPresent()){
+                    nullables.add(rule.getIdentifier().getValue());
+                };
+            });
+        });
     }
 }

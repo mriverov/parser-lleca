@@ -7,16 +7,17 @@ import java.util.*;
 
 public class FirstCalculator {
 
-    private HashMap<String, Set<String>> result = new HashMap<>();
     private List<String> nullables = new ArrayList<>();
+    private Grammar grammar;
 
-    public FirstCalculator() {
-
+    public FirstCalculator(Grammar grammar, List<String> nullables) {
+        this.grammar = grammar;
+        this.nullables = nullables;
     }
 
 
-    public void calculateFirst(Grammar grammar, List<String> nonTerminals, List<String> terminals){
-        List<String> nullables = this.getNullables(grammar);
+    public HashMap<String, Set<String>> calculateFirst(List<String> nonTerminals, List<String> terminals){
+        HashMap<String, Set<String>> result = new HashMap<String, Set<String>>();
         nonTerminals.forEach(nt ->{
             result.put(nt, new HashSet<>());
         });
@@ -31,7 +32,7 @@ public class FirstCalculator {
                     String ident = rule.getIdentifier().getValue();
                     if (!production.getExpantion().isPresent()){
 
-                            result.get(ident).add("EPSILON");
+                        result.get(ident).add("EPSILON");
                     }
                     else{
                         production.getExpantion().ifPresent(expansion -> {
@@ -41,7 +42,7 @@ public class FirstCalculator {
                                 if(!nullables.contains(currValue)
                                         && terminals.contains(currValue)){
 
-                                        result.get(ident).add(currValue);
+                                    result.get(ident).add(currValue);
                                         break;
 
                                 }
@@ -53,7 +54,7 @@ public class FirstCalculator {
                                 if (i == ss-1){
                                     if(nullables.contains(currValue)){
 
-                                            result.get(ident).add("EPSILON");
+                                        result.get(ident).add("EPSILON");
                                     }
                                 }
                             }
@@ -62,8 +63,6 @@ public class FirstCalculator {
                 });
             });
             after =  result.values().stream().mapToInt(list -> list.size()).sum();
-
-
         }
 
         result.forEach((s,l) -> {
@@ -74,22 +73,9 @@ public class FirstCalculator {
                 System.out.println(ll);
             });
         });
-    }
 
 
-
-    /*
-    * Método que calcula los símbolos anulables.
-    * */
-    private List<String> getNullables(Grammar grammar) {
-        grammar.getRules().forEach(rule -> {
-            rule.getProductions().forEach(prod -> {
-                if (!prod.getExpantion().isPresent()){
-                    nullables.add(rule.getIdentifier().getValue());
-                };
-            });
-        });
-        return nullables;
+        return result;
     }
 
 }
