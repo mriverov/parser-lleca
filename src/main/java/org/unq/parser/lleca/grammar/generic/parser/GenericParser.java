@@ -2,9 +2,11 @@ package org.unq.parser.lleca.grammar.generic.parser;
 
 import org.unq.parser.lleca.grammar.lleca.model.Grammar;
 import org.unq.parser.lleca.grammar.lleca.model.Keyword;
+import org.unq.parser.lleca.grammar.lleca.model.Production;
 import org.unq.parser.lleca.grammar.lleca.parser.ParseHelper;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static org.unq.parser.lleca.grammar.lleca.parser.ParseHelper.KEYWORDS;
 import static org.unq.parser.lleca.grammar.lleca.parser.ParseHelper.SYMBOLS;
@@ -24,6 +26,97 @@ public class GenericParser {
     public GenericParser(Grammar grammar) {
         this.grammar = grammar;
         this.initialSymbol = grammar.getRules().get(0).getIdentifier().toString();
+        this.calculateNonTerminals();
+        this.calculateTerminals();
+        this.calculateNullables(grammar);
+
+        this.fc = new FirstCalculator(grammar, nullables);
+        this.foc = new FollowCalculator(grammar, nullables);
+    }
+
+    public void parseGrammar(){
+        //TODO: test
+        validateLL1(grammar);
+
+    }
+
+    public void validateLL1(Grammar grammar ){
+        HashMap<String, Set<String>> first = this.fc.calculateFirst(this.nonTerminals, this.terminals);
+        HashMap<String, List<String>> follow = this.foc.getFollow(first);
+
+        Map<String, List<ProductionTerminalVO>> ll1Table = new HashMap<>();
+
+        grammar.getRules().forEach(rule -> {
+            String currentRule = rule.getIdentifier().getValue();
+            List<ProductionTerminalVO> productionsByRule = new ArrayList<ProductionTerminalVO>();
+            Set<String> currentFirst = first.get(currentRule);
+            List<String> currentFollow = follow.get(currentRule);
+
+            rule.getProductions().forEach(production -> {
+                production.getExpantion().ifPresent(expansion -> {
+                    if(expansion.getSymbols().size()>0){
+                        String currentExpansionSymbol = expansion.getSymbols().get(0).getCurrentValue();
+
+                        // its terminal and is first
+                        if(currentFirst.contains(currentExpansionSymbol)){
+                            productionsByRule.add(new ProductionTerminalVO(currentExpansionSymbol,
+                                    production));
+                        }else{
+                            //is not terminal
+                            if(nonTerminals.contains(currentExpansionSymbol)){
+                                Set<String> firstOfNoTerminal = first.get(currentExpansionSymbol);
+                                firstOfNoTerminal.forEach(f -> {
+                                    if(currentFirst.contains(f)){
+                                        if(f.equals("EPSILON")){
+                                            productionsByRule.addAll(addFollowToTable(production, currentRule, currentFollow));
+                                        }else{
+                                            productionsByRule.add(new ProductionTerminalVO(f,
+                                                    production));
+                                        }
+
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                });
+
+            });
+
+
+            ll1Table.put(rule.getIdentifier().getValue(), productionsByRule);
+
+            //validate that for each no termial there is only one VO
+            currentFirst.forEach(cf -> {
+                Stream<ProductionTerminalVO> prodToValid = productionsByRule.stream().filter(pru -> pru.getTerminal().equals(cf));
+                if (prodToValid.toArray().length > 1) {
+                    throw new RuntimeException("Error building LL(1) table there is more that one production for " + cf);
+                }
+            });
+
+            currentFollow.forEach(cfo -> {
+                Stream<ProductionTerminalVO> prodToValid = productionsByRule.stream().filter(pru -> pru.getTerminal().equals(cfo));
+                if (prodToValid.toArray().length > 1) {
+                    throw new RuntimeException("Error building LL(1) table there is more that one production for " + cfo);
+                }
+            });
+
+
+        });
+
+
+
+    }
+
+    private List<ProductionTerminalVO> addFollowToTable(Production production, String rule, List<String> follow) {
+        List<ProductionTerminalVO> prod = new ArrayList<>();
+        follow.forEach(fo -> {
+            prod.add(new ProductionTerminalVO(fo,
+                    production));
+        });
+
+        return prod;
     }
 
 
@@ -31,7 +124,7 @@ public class GenericParser {
     * Calculo los símbolos no terminales
     * Se asume que son los símbolos que dan nombre a las reglas.
     * */
-    public void calculateNonTerminals(){
+    private void calculateNonTerminals(){
         this.grammar.getRules().forEach(rule -> {
             nonTerminals.add(rule.getIdentifier().toString());
         });
@@ -42,7 +135,7 @@ public class GenericParser {
     * Serán las palabras clave y los símbolos dentro de las expansiones de cada producción
     * que no sean palabras clave ni no terminales.
     * */
-    public void calculateTerminals(){
+    private void calculateTerminals(){
         Map<String, List<String>>   x = ph.getKeywordsAndSymbols(this.grammar);
         x.get(KEYWORDS).forEach(keyword -> {
             terminals.add(keyword);
@@ -67,20 +160,6 @@ public class GenericParser {
         terminals.add(Keyword.ID.getValue());
         terminals.add(Keyword.STRING.getValue());
 
-
-    }
-
-    public void parseGrammar(){
-        this.calculateNonTerminals();
-        this.calculateTerminals();
-        this.calculateNullables(grammar);
-
-        this.fc = new FirstCalculator(grammar, nullables);
-
-        HashMap<String, Set<String>> first = this.fc.calculateFirst(this.nonTerminals, this.terminals);
-
-        this.foc = new FollowCalculator(grammar, first, nullables);
-        this.foc.getFollow();
 
     }
 

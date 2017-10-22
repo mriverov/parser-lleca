@@ -10,22 +10,20 @@ import java.util.*;
 public class FollowCalculator {
 
     private Grammar grammar;
-    private HashMap<String, Set<String>> first;
     private List<String> nullables;
 
-    public FollowCalculator(Grammar grammar, HashMap<String, Set<String>> first, List<String> nullables ) {
+    public FollowCalculator(Grammar grammar, List<String> nullables ) {
         this.grammar = grammar;
-        this.first = first;
         this.nullables = nullables;
     }
 
-    public HashMap<String, List<String>> getFollow(){
+    public HashMap<String, List<String>> getFollow(HashMap<String, Set<String>> first){
         HashMap<String, List<String>> follow = new HashMap<String, List<String>>();
 
         Boolean isFirstRule = Boolean.TRUE;
 
         for(Rule rule: grammar.getRules()){
-            List followResult = getFollow(rule.getIdentifier().getValue());
+            List followResult = getFollow(rule.getIdentifier().getValue(), first);
             if(isFirstRule){
                 followResult.add("$");
 
@@ -39,7 +37,7 @@ public class FollowCalculator {
         return follow;
     }
 
-    private List<String> getFollow(String rule){
+    private List<String> getFollow(String rule, HashMap<String, Set<String>> first){
         List<String> follow = new ArrayList<>();
 
         grammar.getRules().forEach(currentRule -> {
@@ -60,7 +58,7 @@ public class FollowCalculator {
                                 if(isFirst){
                                     follow.add("$");
                                 }
-                                follow.addAll(getFollow(currentRule.getIdentifier().getValue()));
+                                follow.addAll(getFollow(currentRule.getIdentifier().getValue(), first));
                             }
                         }
                         next = sy.getCurrentValue().equals(rule);
@@ -71,7 +69,7 @@ public class FollowCalculator {
                         if(isFirst){
                             follow.add("$");
                         }
-                        follow.addAll(getFollow(currentRule.getIdentifier().getValue()));
+                        follow.addAll(getFollow(currentRule.getIdentifier().getValue(), first));
                     }
                 }
             });
