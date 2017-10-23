@@ -17,13 +17,13 @@ public class FollowCalculator {
         this.nullables = nullables;
     }
 
-    public HashMap<String, List<String>> getFollow(HashMap<String, Set<String>> first){
-        HashMap<String, List<String>> follow = new HashMap<String, List<String>>();
+    public HashMap<String, Set<String>> getFollow(HashMap<String, Set<String>> first){
+        HashMap<String, Set<String>> follow = new HashMap<String, Set<String>>();
 
         Boolean isFirstRule = Boolean.TRUE;
 
         for(Rule rule: grammar.getRules()){
-            List followResult = getFollow(rule.getIdentifier().getValue(), first);
+            Set followResult = getFollow(rule.getIdentifier().getValue(), first);
             if(isFirstRule){
                 followResult.add("$");
 
@@ -37,8 +37,8 @@ public class FollowCalculator {
         return follow;
     }
 
-    private List<String> getFollow(String rule, HashMap<String, Set<String>> first){
-        List<String> follow = new ArrayList<>();
+    private Set<String> getFollow(String rule, HashMap<String, Set<String>> first){
+        Set<String> follow = new HashSet<>();
 
         grammar.getRules().forEach(currentRule -> {
             currentRule.getProductions().forEach(production -> {

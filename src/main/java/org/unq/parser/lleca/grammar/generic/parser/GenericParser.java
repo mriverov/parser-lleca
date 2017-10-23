@@ -1,11 +1,14 @@
 package org.unq.parser.lleca.grammar.generic.parser;
 
+import org.unq.parser.lleca.grammar.lleca.model.Expansion;
 import org.unq.parser.lleca.grammar.lleca.model.Grammar;
 import org.unq.parser.lleca.grammar.lleca.model.Keyword;
 import org.unq.parser.lleca.grammar.lleca.model.Production;
 import org.unq.parser.lleca.grammar.lleca.parser.ParseHelper;
 
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.unq.parser.lleca.grammar.lleca.parser.ParseHelper.KEYWORDS;
@@ -35,25 +38,24 @@ public class GenericParser {
     }
 
     public void parseGrammar(){
-        //TODO: test
         validateLL1(grammar);
-
     }
 
     public void validateLL1(Grammar grammar ){
         HashMap<String, Set<String>> first = this.fc.calculateFirst(this.nonTerminals, this.terminals);
-        HashMap<String, List<String>> follow = this.foc.getFollow(first);
+        HashMap<String, Set<String>> follow = this.foc.getFollow(first);
 
         Map<String, List<ProductionTerminalVO>> ll1Table = new HashMap<>();
 
         grammar.getRules().forEach(rule -> {
             String currentRule = rule.getIdentifier().getValue();
-            List<ProductionTerminalVO> productionsByRule = new ArrayList<ProductionTerminalVO>();
+            List<ProductionTerminalVO> productionsByRule = new ArrayList<>();
             Set<String> currentFirst = first.get(currentRule);
-            List<String> currentFollow = follow.get(currentRule);
+            Set<String> currentFollow = follow.get(currentRule);
 
             rule.getProductions().forEach(production -> {
-                production.getExpantion().ifPresent(expansion -> {
+                if(production.getExpantion().isPresent()){
+                    Expansion expansion = production.getExpantion().get();
                     if(expansion.getSymbols().size()>0){
                         String currentExpansionSymbol = expansion.getSymbols().get(0).getCurrentValue();
 
@@ -68,48 +70,44 @@ public class GenericParser {
                                 firstOfNoTerminal.forEach(f -> {
                                     if(currentFirst.contains(f)){
                                         if(f.equals("EPSILON")){
-                                            productionsByRule.addAll(addFollowToTable(production, currentRule, currentFollow));
+                                            productionsByRule.addAll(addFollowToTable(production, currentFollow));
                                         }else{
                                             productionsByRule.add(new ProductionTerminalVO(f,
                                                     production));
                                         }
-
                                     }
                                 });
                             }
                         }
                     }
-
-                });
-
+                }else{
+                    if(currentFirst.contains("EPSILON")){
+                        productionsByRule.addAll(addFollowToTable(production, currentFollow));
+                    }
+                }
             });
-
 
             ll1Table.put(rule.getIdentifier().getValue(), productionsByRule);
 
             //validate that for each no termial there is only one VO
-            currentFirst.forEach(cf -> {
-                Stream<ProductionTerminalVO> prodToValid = productionsByRule.stream().filter(pru -> pru.getTerminal().equals(cf));
-                if (prodToValid.toArray().length > 1) {
-                    throw new RuntimeException("Error building LL(1) table there is more that one production for " + cf);
-                }
-            });
-
-            currentFollow.forEach(cfo -> {
-                Stream<ProductionTerminalVO> prodToValid = productionsByRule.stream().filter(pru -> pru.getTerminal().equals(cfo));
-                if (prodToValid.toArray().length > 1) {
-                    throw new RuntimeException("Error building LL(1) table there is more that one production for " + cfo);
-                }
-            });
-
-
+            validateTable(productionsByRule, currentFirst);
+            validateTable(productionsByRule, currentFollow);
         });
 
-
-
+        System.out.println("Validation result: The grammar is LL1");
     }
 
-    private List<ProductionTerminalVO> addFollowToTable(Production production, String rule, List<String> follow) {
+    private void validateTable(List<ProductionTerminalVO> productionsByRule, Set<String> terminals){
+        terminals.forEach(cf -> {
+            List<ProductionTerminalVO> prodToValid = productionsByRule.stream().filter(pru -> pru.getTerminal().equals(cf)).collect(Collectors.toList());
+            if (prodToValid.size() > 1) {
+                System.out.println("Validation result: The grammar is invalid, there is not LL1");
+                throw new RuntimeException("Error building LL(1) table there is more that one production for " + cf);
+            }
+        });
+    }
+
+    private List<ProductionTerminalVO> addFollowToTable(Production production, Set<String> follow) {
         List<ProductionTerminalVO> prod = new ArrayList<>();
         follow.forEach(fo -> {
             prod.add(new ProductionTerminalVO(fo,
