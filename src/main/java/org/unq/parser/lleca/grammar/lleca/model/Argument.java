@@ -14,4 +14,12 @@ public class Argument {
     public Argument(ArgumentList argumentList){
         this.argumentList = Optional.of(argumentList);
     }
+
+    public Optional<ArgumentList> getArgumentList() {
+        return argumentList;
+    }
+
+    public void setArgumentList(Optional<ArgumentList> argumentList) {
+        this.argumentList = argumentList;
+    }
 }

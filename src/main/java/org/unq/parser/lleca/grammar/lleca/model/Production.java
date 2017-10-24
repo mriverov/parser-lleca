@@ -12,6 +12,7 @@ public class Production {
     private String arrow = "=>";
     private Term term;
 
+
     public Production(Optional<Expansion> expansion, Term term){
         this.expansion = expansion;
         this.term = term;
@@ -21,6 +22,10 @@ public class Production {
         return expansion;
     }
 
+
+    public Term getTerm() {
+        return term;
+    }
 
 
 }

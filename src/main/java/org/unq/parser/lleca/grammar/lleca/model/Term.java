@@ -48,4 +48,60 @@ public class Term {
         this.substitution = substitution;
         isNumericAndSubstitution = Boolean.TRUE;
     }
+
+    public Optional<String> getHole() {
+        return hole;
+    }
+
+    public void setHole(Optional<String> hole) {
+        this.hole = hole;
+    }
+
+    public Optional<Identifier> getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(Optional<Identifier> identifier) {
+        this.identifier = identifier;
+    }
+
+    public Optional<Argument> getArgument() {
+        return argument;
+    }
+
+    public void setArgument(Optional<Argument> argument) {
+        this.argument = argument;
+    }
+
+    public Optional<String> getString_() {
+        return string_;
+    }
+
+    public void setString_(Optional<String> string_) {
+        this.string_ = string_;
+    }
+
+    public Optional<Integer> getNum() {
+        return num;
+    }
+
+    public void setNum(Optional<Integer> num) {
+        this.num = num;
+    }
+
+    public Optional<String> getDolarSign() {
+        return dolarSign;
+    }
+
+    public void setDolarSign(Optional<String> dolarSign) {
+        this.dolarSign = dolarSign;
+    }
+
+    public Optional<Substitution> getSubstitution() {
+        return substitution;
+    }
+
+    public void setSubstitution(Optional<Substitution> substitution) {
+        this.substitution = substitution;
+    }
 }

@@ -1,15 +1,14 @@
 package org.unq.parser.lleca.grammar.generic.parser;
 
-import org.unq.parser.lleca.grammar.lleca.model.Expansion;
-import org.unq.parser.lleca.grammar.lleca.model.Grammar;
-import org.unq.parser.lleca.grammar.lleca.model.Keyword;
-import org.unq.parser.lleca.grammar.lleca.model.Production;
+import org.unq.parser.lleca.grammar.generic.model.Hole;
+import org.unq.parser.lleca.grammar.generic.model.STerm;
+import org.unq.parser.lleca.grammar.generic.model.Struct;
+import org.unq.parser.lleca.grammar.lleca.model.*;
 import org.unq.parser.lleca.grammar.lleca.parser.ParseHelper;
+import org.unq.parser.lleca.lexer.tokens.Token;
 
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.unq.parser.lleca.grammar.lleca.parser.ParseHelper.KEYWORDS;
 import static org.unq.parser.lleca.grammar.lleca.parser.ParseHelper.SYMBOLS;
@@ -25,6 +24,7 @@ public class GenericParser {
     private FollowCalculator foc;
     private ParseHelper ph = new ParseHelper();
     private String initialSymbol;
+    Map<String, List<ProductionTerminalVO>> ll1Table = new HashMap<>();
 
     public GenericParser(Grammar grammar) {
         this.grammar = grammar;
@@ -32,7 +32,6 @@ public class GenericParser {
         this.calculateNonTerminals();
         this.calculateTerminals();
         this.calculateNullables(grammar);
-
         this.fc = new FirstCalculator(grammar, nullables);
         this.foc = new FollowCalculator(grammar, nullables);
     }
@@ -41,11 +40,76 @@ public class GenericParser {
         validateLL1(grammar);
     }
 
+    public void parseInput(List<Token> tokens){
+        analize(initialSymbol,  tokens);
+    }
+
+    /*
+    * Algoritmo recursivo que arma el árbol AST
+    * */
+    private STerm analize(String symbol, List<Token> tokens) {
+        //TODO: ver el caso base de la lista vacía.
+        if(tokens.isEmpty()){
+            return new Hole();
+        }
+        if (terminals.contains(symbol)){
+            Token b = tokens.get(0);
+            if(b.value().equals(symbol)){
+                return b.getLeaf(symbol, ll1Table);
+            }
+            else {
+                System.out.println("Error: Se esperaba leer "+symbol+" pero se encontró "+b.value());
+            }
+        }
+        //Si es un NO Terminal
+        else {
+            Token b = tokens.get(0);
+            if (tableContainsProduction(symbol,b.value())){
+                Production p = tableGetProduction(symbol, b.value());
+                if (p.getExpantion().isPresent()){
+                    int sSize = p.getExpantion().get().getSymbolsSize();
+                    List<Symbol> symbols = p.getExpantion().get().getSymbols();
+                    List<STerm> args = new ArrayList<>();
+                    for (int i = 0; i < sSize; i++) {
+                        tokens.remove(0);
+                        args.add(analize(symbols.get(i).getCurrentValue(), tokens));
+                        return null;
+                        // return new Struct(symbol, Optional.of(args));
+                    }
+                }
+            }
+            else {
+                System.out.println("Error: Se esperba leer "+symbol+" pero se encontró "+b.value());
+            }
+        }
+        return null;
+
+    }
+
+    public Boolean tableContainsProduction(String nonTerminal, String terminal){
+        if(ll1Table.containsKey(nonTerminal)){
+            List<ProductionTerminalVO> prods = ll1Table.get(nonTerminal);
+            for (ProductionTerminalVO prod:
+                 prods) {
+                if (prod.getTerminal().equals(terminal)) return true;
+            }
+        }
+        return false;
+    }
+
+    public Production tableGetProduction(String nonTerminal, String terminal){
+        List<ProductionTerminalVO> prods = ll1Table.get(nonTerminal);
+        for (ProductionTerminalVO prod: prods){
+            if (prod.getTerminal().equals(terminal)) return prod.getProduction();
+        }
+        return null;
+    }
+
+
     public void validateLL1(Grammar grammar ){
         HashMap<String, Set<String>> first = this.fc.calculateFirst(this.nonTerminals, this.terminals);
         HashMap<String, Set<String>> follow = this.foc.getFollow(first);
 
-        Map<String, List<ProductionTerminalVO>> ll1Table = new HashMap<>();
 
         grammar.getRules().forEach(rule -> {
             String currentRule = rule.getIdentifier().getValue();
@@ -141,18 +205,7 @@ public class GenericParser {
         x.get(SYMBOLS).forEach(symbol -> {
             terminals.add(symbol);
         });
-        /*this.grammar.getRules().forEach(rule -> {
-            rule.getProductions().forEach(production -> {
-                production.getExpantion().ifPresent(expansion -> {
-                    expansion.getSymbols().forEach(symbol -> {
-                        if(symbol.isKeyword()){
-                            if (!terminals.contains(symbol.getKeyword().get().toString()))
-                            terminals.add(symbol.getKeyword().get().toString());
-                        }
-                    });
-                });
-            });
-        });*/
+
 
         terminals.add(Keyword.NUM.getValue());
         terminals.add(Keyword.ID.getValue());

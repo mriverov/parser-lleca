@@ -48,8 +48,8 @@ public class App {
 
         ReservedSymbols llecaS = new ReservedSymbols(llecaSymbols);
 
-        File gramatica = new File("./files/alumnos.ll");
-       // File gramatica = new File("./files/robot.ll");
+        //File gramatica = new File("./files/alumnos.ll");
+       File gramatica = new File("./files/robot.ll");
         Tokenizer elLexer = new Tokenizer(gramatica, llecaS, llecaK);
         Pair<ParseResult,List<Token>> tokens = elLexer.tokenize();
         Parser p = new Parser(tokens.getValue());
@@ -58,6 +58,23 @@ public class App {
 
         GenericParser gp = new GenericParser(grammar);
         gp.parseGrammar();
+
+
+        Map<String, List<String>>  result = ParseHelper.getKeywordsAndSymbols(grammar);
+
+        List<String> kw = result.get(KEYWORDS);
+        ReservedKeywords rkwc = new ReservedKeywords(kw);
+
+
+        List<String> sy = result.get(SYMBOLS);
+        ReservedSymbols symc = new ReservedSymbols(sy);
+        //File input = new File("./tests_lleca/cucaracha/test29.input");
+        File input = new File("./files/esquina.input");
+        Tokenizer tokenCcacha = new Tokenizer(input,  symc, rkwc);
+
+        Pair<ParseResult,List<Token>> cucaracha =  tokenCcacha.tokenize();
+
+        gp.parseInput(cucaracha.getValue());
 
         /*
         Pair<ParseResult,List<Token>> tokens = elLexer.tokenize();

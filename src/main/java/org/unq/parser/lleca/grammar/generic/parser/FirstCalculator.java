@@ -21,7 +21,7 @@ public class FirstCalculator {
         nonTerminals.forEach(nt ->{
             result.put(nt, new HashSet<>());
         });
-        nullables.forEach(nul -> System.out.println(nul));
+
         int before = 0;
         int after = 1000;
         while (before != after){
@@ -65,14 +65,14 @@ public class FirstCalculator {
             after =  result.values().stream().mapToInt(list -> list.size()).sum();
         }
 
-        result.forEach((s,l) -> {
+        /*result.forEach((s,l) -> {
             System.out.printf("Terminal: ");
             System.out.println(s);
             System.out.println("FIRST:");
             l.forEach(ll -> {
                 System.out.println(ll);
             });
-        });
+        });*/
 
 
         return result;

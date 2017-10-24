@@ -53,10 +53,6 @@ public class Tokenizer {
     }
 
     private ParseResult processFile(String file) {
-        //List<String> keyWordsRegex = this.keywords.getReservedKeywords().stream().map(keyWord -> "^" + keyWord).collect(toList());
-        //List<String> reservedSymbolsRegex = this.symbols.getReservedSymbols().stream().map(symbol -> "^" + symbol).collect(toList());
-        //List<String> globalSymbolsRegex = this.globalSymbols.getGsymbols().stream().map(symbol -> "^" + symbol).collect(toList());
-        //String identifiersRegex = "^[a-zA-Z_][a-zA-Z0-9_]+";
         String identifiersRegex = "(^[a-zA-Z_][a-zA-Z0-9_])*\\w+";
         String numberRegex = "^[0-9]+";
         String quotationMarksRegex = "^([\"'])(?:(?=(\\\\?))\\2.)*?\\1";
@@ -144,12 +140,7 @@ public class Tokenizer {
         String restOfFIle = file.substring(token.length(),file.length());
         return new String[]{token, restOfFIle};
 
-        /*
-        while(m.find()) {
-            String token = m.group( 0 );
-            String k = file.substring(token.length(),file.length());
-        }
-        return new String[0];*/
+
     }
 
     private boolean matches(String regex, String file){
