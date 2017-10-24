@@ -74,7 +74,10 @@ public class App {
 
         Pair<ParseResult,List<Token>> cucaracha =  tokenCcacha.tokenize();
 
-        gp.parseInput(cucaracha.getValue());
+        cucaracha.getValue().forEach(val -> {
+            System.out.println(val.toString());
+        });
+        //gp.parseInput(cucaracha.getValue());
 
         /*
         Pair<ParseResult,List<Token>> tokens = elLexer.tokenize();

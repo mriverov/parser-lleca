@@ -3,6 +3,7 @@ package org.unq.parser.lleca.lexer.tokens;
 import org.unq.parser.lleca.grammar.generic.model.STerm;
 import org.unq.parser.lleca.grammar.generic.model.Struct;
 import org.unq.parser.lleca.grammar.generic.parser.ProductionTerminalVO;
+import org.unq.parser.lleca.grammar.lleca.model.Term;
 
 import java.util.List;
 import java.util.Map;
@@ -23,9 +24,10 @@ public class TokenLiteral implements Token {
     }
 
     @Override
-    public STerm getLeaf(String symbol, Map<String, List<ProductionTerminalVO>> ll1Table) {
-        return new Struct(value, Optional.empty());
+    public Term getLeaf() {
+        return null;
     }
+
 
     public String toString(){
         return " \" " + value + " \" ";

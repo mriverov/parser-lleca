@@ -25,18 +25,10 @@ public class TokenIdentifier implements Token {
     }
 
     @Override
-    public STerm getLeaf(String symbol, Map<String, List<ProductionTerminalVO>> ll1Table) {
-        List<ProductionTerminalVO> p = ll1Table.get(symbol);
-        for (ProductionTerminalVO prod: p){
-            if(prod.getTerminal().equals(value)){
-                Term t = prod.getProduction().getTerm();
-                if (t.getArgument().isPresent()) {
-                    return new Struct(t.getIdentifier().get().getValue(), Optional.of(t.getArgument().get().getArgumentList().get()));
-                }
-            }
-        }
+    public Term getLeaf() {
         return null;
     }
+
 
     public String toString(){
         return "<identificador> "+ value;

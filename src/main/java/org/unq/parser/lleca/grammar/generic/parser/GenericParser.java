@@ -6,6 +6,8 @@ import org.unq.parser.lleca.grammar.generic.model.Struct;
 import org.unq.parser.lleca.grammar.lleca.model.*;
 import org.unq.parser.lleca.grammar.lleca.parser.ParseHelper;
 import org.unq.parser.lleca.lexer.tokens.Token;
+import org.unq.parser.lleca.lexer.tokens.TokenNumeric;
+import org.unq.parser.lleca.lexer.tokens.TokenString;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,15 +49,17 @@ public class GenericParser {
     /*
     * Algoritmo recursivo que arma el árbol AST
     * */
-    private STerm analize(String symbol, List<Token> tokens) {
-        //TODO: ver el caso base de la lista vacía.
+    private Term analize(String symbol, List<Token> tokens) {
+        //TODO: si la lista no tiene más tokens, tengo q buscar la producción que -> EPSILON
+        //o sea: symbol tiene q tener dentro de ll1 una derivación a EPSILON
         if(tokens.isEmpty()){
-            return new Hole();
+            return null;
         }
         if (terminals.contains(symbol)){
             Token b = tokens.get(0);
-            if(b.value().equals(symbol)){
-                return b.getLeaf(symbol, ll1Table);
+            if (b instanceof TokenNumeric && symbol.equals("NUM") || symbol.equals(b.value())){
+                tokens.remove(0);
+                return b.getLeaf();
             }
             else {
                 System.out.println("Error: Se esperaba leer "+symbol+" pero se encontró "+b.value());
@@ -69,12 +73,11 @@ public class GenericParser {
                 if (p.getExpantion().isPresent()){
                     int sSize = p.getExpantion().get().getSymbolsSize();
                     List<Symbol> symbols = p.getExpantion().get().getSymbols();
-                    List<STerm> args = new ArrayList<>();
+                    List<Term> args = new ArrayList<>();
                     for (int i = 0; i < sSize; i++) {
                         tokens.remove(0);
                         args.add(analize(symbols.get(i).getCurrentValue(), tokens));
-                        return null;
-                        // return new Struct(symbol, Optional.of(args));
+                        return makeTerm(symbol, b.value(), args);
                     }
                 }
             }
@@ -84,6 +87,13 @@ public class GenericParser {
         }
         return null;
 
+    }
+
+    private Term makeTerm(String symbol, String b, List<Term> args) {
+        Production prod = tableGetProduction(symbol, b);
+        Term terms = prod.getTerm();
+
+        return terms;
     }
 
     public Boolean tableContainsProduction(String nonTerminal, String terminal){
@@ -210,7 +220,6 @@ public class GenericParser {
         terminals.add(Keyword.NUM.getValue());
         terminals.add(Keyword.ID.getValue());
         terminals.add(Keyword.STRING.getValue());
-
 
     }
 
