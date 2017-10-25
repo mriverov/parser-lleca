@@ -38,21 +38,21 @@ public class FirstCalculator {
                         production.getExpantion().ifPresent(expansion -> {
                             int ss = expansion.getSymbolsSize();
                             for (int i = 0; i < ss; i++) {
-                                String currValue = expansion.getSymbols().get(i).getCurrentValue();
-                                if(!nullables.contains(currValue)
-                                        && terminals.contains(currValue)){
+                                Symbol currValue = expansion.getSymbols().get(0);
+                                if(!isNullable(currValue)
+                                        && terminals.contains(currValue.getCurrentValue())){
 
-                                    result.get(ident).add(currValue);
+                                    result.get(ident).add(currValue.getCurrentValue());
                                         break;
 
                                 }
-                                if (!nullables.contains(currValue)
-                                        && nonTerminals.contains(currValue)){
-                                    result.get(ident).addAll(result.get(currValue));
+                                if (!isNullable(currValue)
+                                        && nonTerminals.contains(currValue.getCurrentValue())){
+                                    result.get(ident).addAll(result.get(currValue.getCurrentValue()));
                                     break;
                                 }
                                 if (i == ss-1){
-                                    if(nullables.contains(currValue)){
+                                    if(isNullable(currValue)){
 
                                         result.get(ident).add("EPSILON");
                                     }
@@ -76,6 +76,10 @@ public class FirstCalculator {
 
 
         return result;
+    }
+
+    private boolean isNullable(Symbol currValue) {
+        return nullables.contains(currValue) && !currValue.isString();
     }
 
 }
