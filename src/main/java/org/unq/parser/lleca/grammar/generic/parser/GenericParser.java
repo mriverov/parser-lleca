@@ -43,7 +43,8 @@ public class GenericParser {
     }
 
     public void parseInput(List<Token> tokens){
-        analize(initialSymbol,  tokens);
+        Term h = analize(initialSymbol,  tokens);
+        h.print();
     }
 
     /*
@@ -75,10 +76,11 @@ public class GenericParser {
                     List<Symbol> symbols = p.getExpantion().get().getSymbols();
                     List<Term> args = new ArrayList<>();
                     for (int i = 0; i < sSize; i++) {
-                        tokens.remove(0);
+                        //tokens.remove(0);
                         args.add(analize(symbols.get(i).getCurrentValue(), tokens));
-                        return makeTerm(symbol, b.value(), args);
+
                     }
+                    return getAction(symbol, b.value(), args);
                 }
             }
             else {
@@ -89,9 +91,20 @@ public class GenericParser {
 
     }
 
-    private Term makeTerm(String symbol, String b, List<Term> args) {
+    private Term getAction(String symbol, String b, List<Term> args) {
         Production prod = tableGetProduction(symbol, b);
         Term terms = prod.getTerm();
+
+        if (terms.isString() || terms.isNumeric()){
+            return terms;
+        }
+        if (terms.isIdentifierAndArgument()){
+            return new ActionArgTerm(terms, args);
+        }
+
+        if (terms.isNumericAndSubstitution()){
+            return new ActionSubstTerm(terms, args);
+        }
 
         return terms;
     }
