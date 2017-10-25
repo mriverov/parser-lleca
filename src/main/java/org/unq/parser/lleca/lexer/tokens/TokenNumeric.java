@@ -24,7 +24,7 @@ public class TokenNumeric implements Token {
 
     @Override
     public Term getLeaf() {
-        return null;
+        return new Term(Integer.valueOf(value));
     }
 
 

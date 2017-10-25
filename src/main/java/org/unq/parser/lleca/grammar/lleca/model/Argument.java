@@ -22,4 +22,12 @@ public class Argument {
     public void setArgumentList(Optional<ArgumentList> argumentList) {
         this.argumentList = argumentList;
     }
+
+    public int getArgsSize(){
+        int n = 0;
+        if (argumentList.isPresent()){
+            argumentList.get().getArgumentsSize();
+        }
+        return n;
+    }
 }

@@ -26,7 +26,7 @@ public class TokenIdentifier implements Token {
 
     @Override
     public Term getLeaf() {
-        return null;
+        return new Term(value);
     }
 
 

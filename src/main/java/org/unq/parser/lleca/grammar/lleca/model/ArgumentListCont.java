@@ -14,4 +14,12 @@ public class ArgumentListCont {
     public ArgumentListCont(List<Term> term){
         this.term = term;
     }
+
+    public List<Term> getTerm() {
+        return term;
+    }
+
+    public int getListContSize(){
+        return term.size();
+    }
 }

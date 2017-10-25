@@ -104,4 +104,31 @@ public class Term {
     public void setSubstitution(Optional<Substitution> substitution) {
         this.substitution = substitution;
     }
+
+
+    public Boolean isIdentifierAndArgument() {
+        return isIdentifierAndArgument;
+    }
+
+    public Boolean isString() {
+        return isString;
+    }
+
+    public Boolean isNumeric() {
+        return isNumeric;
+    }
+
+    public Boolean isNumericAndSubstitution() {
+        return isNumericAndSubstitution;
+    }
+
+
+    public void print() {
+       if(isNumeric){
+           System.out.println(this.getNum().get());
+       }
+       if(isString){
+           System.out.println(this.getString_());
+       }
+    }
 }

@@ -14,4 +14,21 @@ public class ArgumentList {
         this.term = term;
         this.argumentListCont = argumentListCont;
     }
+
+    public Term getTerm() {
+        return term;
+    }
+
+    public int getArgumentsSize(){
+        int n = 1;
+        if (argumentListCont.isPresent()){
+            n +=argumentListCont.get().getTerm().size();
+        }
+
+        return n;
+    }
+
+    public Optional<ArgumentListCont> getArgumentListCont() {
+        return argumentListCont;
+    }
 }

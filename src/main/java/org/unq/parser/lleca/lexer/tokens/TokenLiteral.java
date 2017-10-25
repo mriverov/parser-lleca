@@ -25,7 +25,7 @@ public class TokenLiteral implements Token {
 
     @Override
     public Term getLeaf() {
-        return null;
+        return new Term(value);
     }
 
 
