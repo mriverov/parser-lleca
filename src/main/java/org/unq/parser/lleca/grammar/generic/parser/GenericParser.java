@@ -55,7 +55,7 @@ public class GenericParser {
         //TODO: si la lista no tiene más tokens, tengo q buscar la producción que -> EPSILON
         //o sea: symbol tiene q tener dentro de ll1 una derivación a EPSILON
         if(tokens.isEmpty()/* && derivesEpsilon(symbol)*/){
-            return getExpsilonDerivationFor(symbol);
+            return new Term();
         }
         if (terminals.contains(symbol)){
             Token b = tokens.get(0);

@@ -55,4 +55,8 @@ public class ActionArgTerm extends   Term{
     public void print(){
         System.out.println(this.parseAATerm());
     }
+
+    public String toString(){
+        return this.parseAATerm();
+    }
 }
