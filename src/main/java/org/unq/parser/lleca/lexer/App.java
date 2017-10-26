@@ -48,8 +48,8 @@ public class App {
 
         ReservedSymbols llecaS = new ReservedSymbols(llecaSymbols);
 
-       // File gramatica = new File("./files/robot.ll");
-        File gramatica = new File("./tests_lleca/cucaracha/gramatica.ll");
+       //File gramatica = new File("./files/robot.ll");
+       File gramatica = new File("./tests_lleca/cucaracha/gramatica.ll");
 
         Tokenizer elLexer = new Tokenizer(gramatica, llecaS, llecaK);
         Pair<ParseResult,List<Token>> tokens = elLexer.tokenize();

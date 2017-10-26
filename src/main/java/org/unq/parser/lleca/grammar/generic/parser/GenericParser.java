@@ -53,10 +53,17 @@ public class GenericParser {
     * */
     private Term analize(String symbol, List<Token> tokens) {
         //TODO: si la lista no tiene más tokens, tengo q buscar la producción que -> EPSILON
-        //o sea: symbol tiene q tener dentro de ll1 una derivación a EPSILON
-        if(tokens.isEmpty()/* && derivesEpsilon(symbol)*/){
-            return new Term();
+        //o sea: symbol tiene q tener dentro de ll1 una derivación  EPSILON
+        if(tokens.isEmpty() && accepts(symbol)){
+            Production p = tableGetProduction(symbol, "$");
+            String finalSign = p.getTerm().getIdentifier().get().toString();
+            return new Term(finalSign);
         }
+        /*if (derivesEpsilon(symbol)){
+            Production p = tableGetEpsilonProduction(symbol);
+            String sign = p.getTerm().getIdentifier().get().toString();
+            return new Term(sign);
+        }*/
         if (terminals.contains(symbol)){
             Token b = tokens.get(0);
             if (b instanceof TokenNumeric && ("NUM").equals(symbol) || b instanceof TokenIdentifier && ("ID").equals(symbol)
@@ -78,15 +85,17 @@ public class GenericParser {
                     int sSize = p.getExpantion().get().getSymbolsSize();
                     List<Symbol> symbols = p.getExpantion().get().getSymbols();
                     for (int i = 0; i < sSize; i++) {
-                        //tokens.remove(0);
                         args.add(analize(symbols.get(i).getCurrentValue(), tokens));
-
                     }
                     return getAction(symbol, b.value(), args);
                 }else{
+                    //este es el caso cuando no hay expansión: la prod deriva desde EPSILON,
+                   // String finalSign = p.getTerm().getIdentifier().get().toString();
+                    //return new Term(finalSign);
                     return getAction(symbol, b.value(), args);
                 }
             }
+
             else {
                 System.out.println("Error: Se esperba leer "+symbol+" pero se encontró "+b.value());
             }
@@ -95,22 +104,62 @@ public class GenericParser {
 
     }
 
+    private Production tableGetEpsilonProduction(String symbol) {
+        return null;
+    }
+
+    /*
+    * Indica si el sìmbolo llega al estado de aceptación
+    * */
+    private boolean accepts(String symbol) {
+        return (tableContainsProduction(symbol, "$"));
+    }
+
 
     //TODO
     private Term getExpsilonDerivationFor(String symbol) {
+        List<Rule> rules = grammar.getRules();
+        for (int i = 0; i < rules.size(); i++) {
+            if (rules.get(i).getIdentifier().equals(symbol)){
+                List<Production> prods = rules.get(i).getProductions();
+                for (int j = 0; j < prods.size(); j++) {
+                    if (!prods.get(j).getExpantion().isPresent())
+                        return new Term(prods.get(j).getTerm().toString());
+                }
+            }
+        }
         return null;
     }
 
     //TODO
     private boolean derivesEpsilon(String symbol) {
-
+        List<Rule> rules = grammar.getRules();
+        for (int i = 0; i < rules.size(); i++) {
+            if (rules.get(i).getIdentifier().getValue().equals(symbol)){
+                List<Production> prods = rules.get(i).getProductions();
+                for (int j = 0; j < prods.size(); j++) {
+                    if (!prods.get(j).getExpantion().isPresent())
+                        return true;
+                }
+            }
+        }
         return false;
     }
 
+
+    /*
+    * Método que retorna la acción de un símbolo dado el un terminal y una lista de argumentos
+    * */
     private Term getAction(String symbol, String b, List<Term> args) {
         Production prod = tableGetProduction(symbol, b);
         Term terms = prod.getTerm();
 
+
+        if (!prod.getExpantion().isPresent()){
+            if (terms.isIdentifierAndArgument()){
+                return new Term(terms.getIdentifier().get().toString());
+            }else return new Term(terms.toString());
+        }
         if (terms.isString() || terms.isNumeric()){
             return terms;
         }
@@ -125,6 +174,10 @@ public class GenericParser {
         return terms;
     }
 
+
+    /*
+    * Chequea si en la tabla LL1, un no terminal tiene una producción que arranque con el terminal dado.
+    * */
     public Boolean tableContainsProduction(String nonTerminal, String terminal){
         if(ll1Table.containsKey(nonTerminal)){
             List<ProductionTerminalVO> prods = ll1Table.get(nonTerminal);
@@ -136,6 +189,9 @@ public class GenericParser {
         return false;
     }
 
+    /*
+    * Devuelve la producción de la tabla LL1 que relaciona el No terminal y el terminal dados
+    * */
     public Production tableGetProduction(String nonTerminal, String terminal){
         List<ProductionTerminalVO> prods = ll1Table.get(nonTerminal);
         for (ProductionTerminalVO prod: prods){
@@ -145,6 +201,9 @@ public class GenericParser {
     }
 
 
+    /*
+    * Valida que la tabla armada sea LL1
+    * */
     public void validateLL1(Grammar grammar ){
         HashMap<String, Set<String>> first = this.fc.calculateFirst(this.nonTerminals, this.terminals);
         HashMap<String, Set<String>> follow = this.foc.getFollow(first);
