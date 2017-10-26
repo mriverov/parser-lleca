@@ -6,6 +6,7 @@ import org.unq.parser.lleca.grammar.generic.model.Struct;
 import org.unq.parser.lleca.grammar.lleca.model.*;
 import org.unq.parser.lleca.grammar.lleca.parser.ParseHelper;
 import org.unq.parser.lleca.lexer.tokens.Token;
+import org.unq.parser.lleca.lexer.tokens.TokenIdentifier;
 import org.unq.parser.lleca.lexer.tokens.TokenNumeric;
 import org.unq.parser.lleca.lexer.tokens.TokenString;
 
@@ -58,7 +59,8 @@ public class GenericParser {
         }
         if (terminals.contains(symbol)){
             Token b = tokens.get(0);
-            if (b instanceof TokenNumeric && symbol.equals("NUM") || symbol.equals(b.value())){
+            if (b instanceof TokenNumeric && ("NUM").equals(symbol) || b instanceof TokenIdentifier && ("ID").equals(symbol)
+            || b instanceof TokenString && ("STRING").equals(symbol) || symbol.equals(b.value())){
                 tokens.remove(0);
                 return b.getLeaf();
             }
@@ -71,15 +73,17 @@ public class GenericParser {
             Token b = tokens.get(0);
             if (tableContainsProduction(symbol,b.value())){
                 Production p = tableGetProduction(symbol, b.value());
+                List<Term> args = new ArrayList<>();
                 if (p.getExpantion().isPresent()){
                     int sSize = p.getExpantion().get().getSymbolsSize();
                     List<Symbol> symbols = p.getExpantion().get().getSymbols();
-                    List<Term> args = new ArrayList<>();
                     for (int i = 0; i < sSize; i++) {
                         //tokens.remove(0);
                         args.add(analize(symbols.get(i).getCurrentValue(), tokens));
 
                     }
+                    return getAction(symbol, b.value(), args);
+                }else{
                     return getAction(symbol, b.value(), args);
                 }
             }

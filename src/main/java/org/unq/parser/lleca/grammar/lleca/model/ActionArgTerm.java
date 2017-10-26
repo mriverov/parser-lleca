@@ -20,14 +20,15 @@ public class ActionArgTerm extends   Term{
     public String parseAATerm(){
         String ret = "";
 
-        ret+=term.getIdentifier()+"( ";
+        ret+=term.getIdentifier().get().getValue()+"( ";
 
 
         if (term.getArgument().isPresent()){
             if(term.getArgument().get().getArgumentList().isPresent()){
                 Term fstt = term.getArgument().get().getArgumentList().get().getTerm();
                 if(fstt.isNumericAndSubstitution()){
-                    ret+=args.get(fstt.getNum().get()-1)+" ";
+                    Term argTerm = args.get(fstt.getNum().get() - 1);
+                    ret+= argTerm.toString() +" ";
                 }
                 if(term.getArgument().get().getArgumentList().get().getArgumentListCont().isPresent()){
                     List<Term> t = term.getArgument().get().getArgumentList().get().getArgumentListCont().get().getTerm();

@@ -131,4 +131,12 @@ public class Term {
            System.out.println(this.getString_());
        }
     }
+
+    public String toString() {
+        if(isNumeric){
+            return this.getNum().get().toString();
+        }else {
+            return this.getString_().orElse("");
+        }
+    }
 }
