@@ -54,7 +54,7 @@ public class GenericParser {
     private Term analize(String symbol, List<Token> tokens) {
         //TODO: si la lista no tiene más tokens, tengo q buscar la producción que -> EPSILON
         //o sea: symbol tiene q tener dentro de ll1 una derivación a EPSILON
-        if(tokens.isEmpty() && derivesEpsilon(symbol)){
+        if(tokens.isEmpty()/* && derivesEpsilon(symbol)*/){
             return getExpsilonDerivationFor(symbol);
         }
         if (terminals.contains(symbol)){
