@@ -54,8 +54,8 @@ public class GenericParser {
     private Term analize(String symbol, List<Token> tokens) {
         //TODO: si la lista no tiene más tokens, tengo q buscar la producción que -> EPSILON
         //o sea: symbol tiene q tener dentro de ll1 una derivación a EPSILON
-        if(tokens.isEmpty()){
-            return null;
+        if(tokens.isEmpty() && derivesEpsilon(symbol)){
+            return getExpsilonDerivationFor(symbol);
         }
         if (terminals.contains(symbol)){
             Token b = tokens.get(0);
@@ -95,6 +95,18 @@ public class GenericParser {
 
     }
 
+
+    //TODO
+    private Term getExpsilonDerivationFor(String symbol) {
+        return null;
+    }
+
+    //TODO
+    private boolean derivesEpsilon(String symbol) {
+
+        return false;
+    }
+
     private Term getAction(String symbol, String b, List<Term> args) {
         Production prod = tableGetProduction(symbol, b);
         Term terms = prod.getTerm();
@@ -103,7 +115,7 @@ public class GenericParser {
             return terms;
         }
         if (terms.isIdentifierAndArgument()){
-            return new ActionArgTerm(terms, args);
+            return new ActionArgTerm(terms.getIdentifier().get(), terms.getArgument(), terms, args);
         }
 
         if (terms.isNumericAndSubstitution()){
