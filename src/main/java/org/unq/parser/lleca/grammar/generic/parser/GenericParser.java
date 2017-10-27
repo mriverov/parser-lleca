@@ -205,6 +205,7 @@ public class GenericParser {
     * Valida que la tabla armada sea LL1
     * */
     public void validateLL1(Grammar grammar ){
+        System.out.print("Start validating grammar");
         HashMap<String, Set<String>> first = this.fc.calculateFirst(this.nonTerminals, this.terminals);
         HashMap<String, Set<String>> follow = this.foc.getFollow(first);
 

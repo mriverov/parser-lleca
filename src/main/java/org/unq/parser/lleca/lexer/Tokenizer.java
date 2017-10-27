@@ -87,7 +87,6 @@ public class Tokenizer {
                file=result[1];
                continue;
            }
-           //TODO: quitar las barras invertidas que queden dentro.
            else if (matches(quotationMarksRegex,file)){
                String[] result = this.split(quotationMarksRegex, file);
                tokens.add(new TokenString(result[0]));
@@ -100,8 +99,6 @@ public class Tokenizer {
                file=result[1];
                continue;
            }
-
-
            else {
                int limit = file.length() > 10 ? 10 : file.length();
                 return new ParseResult(Result.ERROR,  "Could not parse file", Optional.of("There is a lexical error near "+file.substring(0,limit)));

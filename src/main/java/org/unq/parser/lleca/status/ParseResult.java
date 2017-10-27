@@ -22,6 +22,9 @@ public class ParseResult {
         return errorReference.isPresent()? " when process " + errorReference.get() : "";
     }
 
+    public Result getResult(){
+        return resultCode;
+    }
 
     @Override
     public String toString(){

@@ -29,8 +29,6 @@ public class Parser {
      */
     public Grammar parse(){
         List<Rule> rules = new ArrayList<>();
-        int currentTokenIndex;
-        //for(currentTokenIndex= globalTokenIndex; currentTokenIndex<= tokens.size() - 1; currentTokenIndex++){
         while(globalTokenIndex < tokens.size()){
             Token currentToken = tokens.get(globalTokenIndex);
 
@@ -39,7 +37,6 @@ public class Parser {
                 List<Production> productions = getProductions();
                 Rule currentRule = new Rule(new Identifier(currentToken.value()), productions);
                 rules.add(currentRule);
-               // currentTokenIndex++;
             }
         }
 
@@ -72,9 +69,6 @@ public class Parser {
                     Term term = getTerm();
                     productions.add(new Production(Optional.empty(), term));
                 }else{
-                    // case expansion exists
-                    //tokenIndex++;
-
 
                     // get all symbols
                     boolean symbolExist = true;
@@ -100,7 +94,6 @@ public class Parser {
                     Expansion expansion = new Expansion(symbols);
                     Term term = getTerm();
 
-                    //globalTokenIndex++;
                     productions.add(new Production(Optional.of(expansion), term));
                 }
 
@@ -148,8 +141,6 @@ public class Parser {
                     return new Term(identifier, Optional.empty());
                 }else{
                     // process argument list
-                    //tokenIndex++;
-                    //acá el término retorna un numeric+substitution, pero es un argumento...
                     Term term = getTerm();
                     // process argument list cont
                     currentToken = tokens.get(globalTokenIndex);
@@ -161,21 +152,17 @@ public class Parser {
                             // get all terms separete by ,
                             globalTokenIndex++;
                             terms.add(getTerm());
-                            //globalTokenIndex++;
                             currentToken = tokens.get(globalTokenIndex);
                         }
 
                         // check that argument list ends
                         if(")".equals(currentToken.value())){
-
                             ArgumentListCont argumentListCont = new ArgumentListCont(terms);
-
                             ArgumentList argumentList = new ArgumentList(term, Optional.of(argumentListCont));
                             Argument argument = new Argument(argumentList);
                             globalTokenIndex++;
                             return new Term(identifier, Optional.of(argument));
                         }
-
                     }
 
                     else{
@@ -184,11 +171,7 @@ public class Parser {
                         Argument argument = new Argument(argumentList);
                         return new Term(identifier, Optional.of(argument));
                     }
-
-
                 }
-
-
             }else if (currentToken instanceof TokenIdentifier){
                 return new Term(identifier, Optional.empty());
             }
@@ -214,7 +197,6 @@ public class Parser {
                         globalTokenIndex++;
                         Term substitutionTerm = getTerm();
                         currentToken = tokens.get(globalTokenIndex);
-                        //globalTokenIndex++;
                         if("]".equals(currentToken.value())){
                             globalTokenIndex++;
                             return new Term(numericValue, Optional.of(new Substitution(substitutionTerm)));

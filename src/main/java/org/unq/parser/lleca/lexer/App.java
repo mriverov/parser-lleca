@@ -9,6 +9,7 @@ import org.unq.parser.lleca.lexer.tokens.Token;
 import org.unq.parser.lleca.lexer.tokens.reserved.ReservedKeywords;
 import org.unq.parser.lleca.lexer.tokens.reserved.ReservedSymbols;
 import org.unq.parser.lleca.status.ParseResult;
+import org.unq.parser.lleca.status.Result;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,67 +49,40 @@ public class App {
 
         ReservedSymbols llecaS = new ReservedSymbols(llecaSymbols);
 
-       //File gramatica = new File("./files/robot.ll");
-       File gramatica = new File("./tests_lleca/cucaracha/gramatica.ll");
+        //Leemos la gramatica
+        File gramatica = new File("./tests_lleca/cucaracha/gramatica.ll");
 
-        Tokenizer elLexer = new Tokenizer(gramatica, llecaS, llecaK);
-        Pair<ParseResult,List<Token>> tokens = elLexer.tokenize();
+        //Tokenizamos la gramatica
+        Lexer lexer = new Lexer(gramatica);
+        Pair<ParseResult,List<Token>> tokens = lexer.tokenize(llecaS, llecaK);
         Parser p = new Parser(tokens.getValue());
 
+        //Armamos la gramatica en una estructura segun las regalas de la gramatica lleca
         Grammar grammar = p.parse();
 
+        //Validamos que esa gramatica sea LL1
         GenericParser gp = new GenericParser(grammar);
         gp.parseGrammar();
 
-
+        //Obtenemos los simbolos y palabras reservadas
         Map<String, List<String>>  result = ParseHelper.getKeywordsAndSymbols(grammar);
+        ReservedKeywords rkwc = new ReservedKeywords(result.get(KEYWORDS));
+        ReservedSymbols symc = new ReservedSymbols(result.get(SYMBOLS));
 
-        List<String> kw = result.get(KEYWORDS);
-        ReservedKeywords rkwc = new ReservedKeywords(kw);
-
-
-        List<String> sy = result.get(SYMBOLS);
-        ReservedSymbols symc = new ReservedSymbols(sy);
+        //Leemos el programa y lo tokenizamos
         File input = new File("./tests_lleca/cucaracha/test00.input");
-        //File input = new File("./files/esquina.input");
         Tokenizer tokenCcacha = new Tokenizer(input,  symc, rkwc);
 
         Pair<ParseResult,List<Token>> cucaracha =  tokenCcacha.tokenize();
 
-        cucaracha.getValue().forEach(val -> {
-            System.out.println(val.toString());
-        });
-        gp.parseInput(cucaracha.getValue());
-
-        /*
-        Pair<ParseResult,List<Token>> tokens = elLexer.tokenize();
-        tokens.getValue().forEach(token-> System.out.println(token));
-
-        System.out.println(tokens.getKey());
-
-        Parser p = new Parser(tokens.getValue());
-        Grammar grammar = p.parse();
-        Map<String, List<String>>  result = ParseHelper.getKeywordsAndSymbols(grammar);
-        System.out.println(result);
-
-
-        List<String> kw = result.get(KEYWORDS);
-        ReservedKeywords rkwc = new ReservedKeywords(kw);
-
-
-        List<String> sy = result.get(SYMBOLS);
-        ReservedSymbols symc = new ReservedSymbols(sy);
-        File input = new File("./tests_lleca/cucaracha/test29.input");
-       //File input = new File("./files/esquina.input");
-        Tokenizer tokenCcacha = new Tokenizer(input,  symc, rkwc);
-
-        Pair<ParseResult,List<Token>> cucaracha =  tokenCcacha.tokenize();
-        cucaracha.getValue().forEach(token-> System.out.println(token));
-
-
-        GenericParser gp = new GenericParser(grammar);
-        gp.parseGrammar();
-        */
+        if(Result.OK.equals(cucaracha.getKey().getResult())){
+            cucaracha.getValue().forEach(val -> {
+                System.out.println(val.toString());
+            });
+            gp.parseInput(cucaracha.getValue());
+        }else{
+            System.out.print("Error parsing input file with the following error: "+ cucaracha.getKey().toString());
+        }
     }
 
 
