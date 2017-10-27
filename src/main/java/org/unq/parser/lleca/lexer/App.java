@@ -50,7 +50,7 @@ public class App {
         ReservedSymbols llecaS = new ReservedSymbols(llecaSymbols);
 
         //Leemos la gramatica
-        File gramatica = new File("./tests_lleca/cucaracha/gramatica.ll");
+        File gramatica = new File("./tests_lleca/robot/robot.ll");
 
         //Tokenizamos la gramatica
         Lexer lexer = new Lexer(gramatica);
@@ -70,7 +70,7 @@ public class App {
         ReservedSymbols symc = new ReservedSymbols(result.get(SYMBOLS));
 
         //Leemos el programa y lo tokenizamos
-        File input = new File("./tests_lleca/cucaracha/test00.input");
+        File input = new File("./tests_lleca/robot/esquina.input");
         Tokenizer tokenCcacha = new Tokenizer(input,  symc, rkwc);
 
         Pair<ParseResult,List<Token>> cucaracha =  tokenCcacha.tokenize();
