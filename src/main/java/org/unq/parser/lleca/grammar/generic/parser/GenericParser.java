@@ -52,18 +52,11 @@ public class GenericParser {
     * Algoritmo recursivo que arma el árbol AST
     * */
     private Term analize(String symbol, List<Token> tokens) {
-        //TODO: si la lista no tiene más tokens, tengo q buscar la producción que -> EPSILON
-        //o sea: symbol tiene q tener dentro de ll1 una derivación  EPSILON
         if(tokens.isEmpty() && accepts(symbol)){
             Production p = tableGetProduction(symbol, "$");
             String finalSign = p.getTerm().getIdentifier().get().toString();
             return new Term(finalSign);
         }
-        /*if (derivesEpsilon(symbol)){
-            Production p = tableGetEpsilonProduction(symbol);
-            String sign = p.getTerm().getIdentifier().get().toString();
-            return new Term(sign);
-        }*/
         if (terminals.contains(symbol)){
             Token b = tokens.get(0);
             if (b instanceof TokenNumeric && ("NUM").equals(symbol) || b instanceof TokenIdentifier && ("ID").equals(symbol)
@@ -89,7 +82,7 @@ public class GenericParser {
                     }
                     return getAction(symbol, b.value(), args);
                 }else{
-                    //este es el caso cuando no hay expansión: la prod deriva desde EPSILON,
+                    //este es el caso cuando no hay expansión: la prod deriva desde EPSILON, --UNSOLVED
                    // String finalSign = p.getTerm().getIdentifier().get().toString();
                     //return new Term(finalSign);
                     return getAction(symbol, b.value(), args);
@@ -116,7 +109,9 @@ public class GenericParser {
     }
 
 
-    //TODO
+    /*
+    * Devuelve la derivación a EPSILON para un símbolo (UNUSED)
+    * */
     private Term getExpsilonDerivationFor(String symbol) {
         List<Rule> rules = grammar.getRules();
         for (int i = 0; i < rules.size(); i++) {
@@ -131,7 +126,9 @@ public class GenericParser {
         return null;
     }
 
-    //TODO
+    /*
+    * Verifica si un símbolo deriva a EPSILON
+    * */
     private boolean derivesEpsilon(String symbol) {
         List<Rule> rules = grammar.getRules();
         for (int i = 0; i < rules.size(); i++) {
@@ -158,7 +155,8 @@ public class GenericParser {
         if (!prod.getExpantion().isPresent()){
             if (terms.isIdentifierAndArgument()){
                 return new Term(terms.getIdentifier().get().toString());
-            }else return new Term(terms.toString());
+            }
+            else return new Term(terms.toString());
         }
         if (terms.isString() || terms.isNumeric()){
             return terms;
@@ -168,7 +166,7 @@ public class GenericParser {
         }
 
         if (terms.isNumericAndSubstitution()){
-            return new ActionSubstTerm(terms, args);
+            return new ActionSubstTerm(terms.getNum().get(), terms.getSubstitution(), terms, args);
         }
 
         return terms;

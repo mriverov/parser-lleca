@@ -1,5 +1,6 @@
 package org.unq.parser.lleca.grammar.lleca.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,8 +32,21 @@ public class ActionArgTerm extends   Term{
             if(term.getArgument().get().getArgumentList().isPresent()){
                 Term fstt = term.getArgument().get().getArgumentList().get().getTerm();
                 if(fstt.isNumericAndSubstitution()){
-                    Term argTerm = args.get(fstt.getNum().get() - 1);
-                    ret+= argTerm.toString() +" ";
+                   /* if ( args.get(fstt.getNum().get() - 1).isIdentifierAndArgument()){
+                        ActionArgTerm argTerm = new ActionArgTerm(args.get(fstt.getNum().get()-1).getIdentifier().get(), Optional.empty(), args.get(fstt.getNum().get()-1), new ArrayList<Term>());
+                        ret+=argTerm.toString()+" ";
+                    }
+                    else {*/
+                   if (args.get(fstt.getNum().get() - 1).getString_().isPresent()) {
+                       String subst = args.get(fstt.getNum().get() - 1).getString_().get();
+                       Term argTerm = new Term(subst);
+                       ret += argTerm.toString() + " ";
+                   }
+                   else {
+                       Term argTerm = args.get(fstt.getNum().get() - 1);
+                       ret += argTerm.toString() + " ";
+                   }
+                    //}
                 }
                 if(term.getArgument().get().getArgumentList().get().getArgumentListCont().isPresent()){
                     List<Term> t = term.getArgument().get().getArgumentList().get().getArgumentListCont().get().getTerm();

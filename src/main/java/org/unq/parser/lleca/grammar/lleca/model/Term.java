@@ -135,6 +135,11 @@ public class Term {
     public String toString() {
         if(isNumeric){
             return this.getNum().get().toString();
+        }else if (isNumericAndSubstitution){
+            if (this.substitution.isPresent()){
+             return this.getSubstitution().get().getTerm().toString();
+            }
+            else return "[]";
         }else {
             return this.getString_().orElse("");
         }

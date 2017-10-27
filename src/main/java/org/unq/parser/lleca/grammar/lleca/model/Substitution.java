@@ -14,4 +14,11 @@ public class Substitution {
     }
 
 
+    public Term getTerm() {
+        return term;
+    }
+
+    public void setTerm(Term term) {
+        this.term = term;
+    }
 }

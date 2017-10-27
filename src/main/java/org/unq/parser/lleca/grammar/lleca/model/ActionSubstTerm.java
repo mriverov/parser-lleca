@@ -2,6 +2,7 @@ package org.unq.parser.lleca.grammar.lleca.model;
 
 
 import java.util.List;
+import java.util.Optional;
 
 /*
 * Se crea esta clase para crear un término con sus argumentos/sustituciones
@@ -12,11 +13,13 @@ public class ActionSubstTerm extends Term{
     private Term term;
     private List<Term> args;
 
-    public ActionSubstTerm(Term term, List<Term> args) {
+
+
+    public ActionSubstTerm(Integer num, Optional<Substitution> substitution, Term term, List<Term> args) {
+        super(num, substitution);
         this.term = term;
         this.args = args;
     }
-
 
     public String parseASTerm() {
         String ret = "";
