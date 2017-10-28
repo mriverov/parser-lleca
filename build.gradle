@@ -2,9 +2,12 @@ group 'org.unq.parser.lleca'
 version '1.0.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'application'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+mainClassName = 'org.unq.parser.lleca.app.App'
 
 repositories {
     mavenCentral()
